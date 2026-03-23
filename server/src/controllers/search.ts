@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import db from '../db';
 import { SearchQuery } from '../schemas/search.schema';
+import { mockSearchResults } from '../mock/data';
+
+const USE_MOCK = process.env.USE_MOCK === 'true';
 
 // ---------------------------------------------------------------------------
 // GET /api/search?q=…&category=…
@@ -10,11 +13,30 @@ export const search = async (
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
+  // ── MOCK MODE ──────────────────────────────────────────────────────────────
+  if (USE_MOCK) {
+    const q = (req.query.q as string) ?? '';
+    const category = (req.query.category as string) ?? '';
+    const lq = q.toLowerCase();
+    let data = mockSearchResults.filter(r =>
+      r.title.toLowerCase().includes(lq) ||
+      r.excerpt.toLowerCase().includes(lq),
+    );
+    if (category) data = data.filter(r => r.category_slug === category);
+    res.json({
+      query: q,
+      category: category || null,
+      data,
+      meta: { page: 1, limit: 20, count: data.length, total_count: data.length },
+    });
+    return;
+  }
+
+  // ── REAL DB ────────────────────────────────────────────────────────────────
   try {
     const { q, category, page, limit }: SearchQuery = (req as any).validatedQuery;
     const offset = (page - 1) * limit;
 
-    // Build dynamic WHERE clause
     const conditions: string[] = [
       `a.status = 'published'`,
       `a.search_vector @@ plainto_tsquery('english', $1)`,
@@ -30,7 +52,6 @@ export const search = async (
 
     const whereClause = conditions.join(' AND ');
 
-    // Count query
     const countResult = await db.query(
       `SELECT COUNT(*) AS total
        FROM articles a
@@ -40,7 +61,6 @@ export const search = async (
     );
     const totalCount = parseInt(countResult.rows[0]?.total || '0', 10);
 
-    // Results query (ranked)
     const result = await db.query(
       `SELECT
          a.id, a.title, a.slug, a.excerpt, a.cover_image_url,

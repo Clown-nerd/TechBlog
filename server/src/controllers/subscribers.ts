@@ -3,8 +3,11 @@ import { Resend } from 'resend';
 import db from '../db';
 import { createError } from '../middleware/errorHandler';
 import { SubscribeInput } from '../schemas/subscriber.schema';
+import { mockSubscribers } from '../mock/data';
 
+const USE_MOCK = process.env.USE_MOCK === 'true';
 const resend = new Resend(process.env.RESEND_API_KEY || 're_dummy_key');
+
 
 // ---------------------------------------------------------------------------
 // POST /api/subscribers

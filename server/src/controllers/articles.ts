@@ -6,6 +6,10 @@ import {
   CreateArticleInput,
   UpdateArticleInput,
 } from '../schemas/article.schema';
+import { mockArticlesList, mockArticlesFull } from '../mock/data';
+
+const USE_MOCK = process.env.USE_MOCK === 'true';
+
 
 // ---------------------------------------------------------------------------
 // GET /api/articles
@@ -15,24 +19,30 @@ export const getArticles = async (
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
+  if (USE_MOCK) {
+    const { status, category } = req.query as any;
+    let data = mockArticlesList;
+    if (status) data = data.filter((a: any) => a.status === status);
+    else data = data.filter((a: any) => a.status === 'published');
+    if (category) data = data.filter((a: any) => a.category?.slug === category);
+    res.json({ data, meta: { page: 1, limit: 20, total: data.length, totalPages: 1 } });
+    return;
+  }
   try {
     const q: ArticleListQuery = (req as any).validatedQuery;
     const { page, limit, category, tag, status, sort, dir } = q;
     const offset = (page - 1) * limit;
 
-    // Allowed columns for ORDER BY (whitelist to prevent injection)
     const sortCol = sort === 'view_count' ? 'a.view_count' : 'a.published_at';
     const sortDir = dir === 'asc' ? 'ASC' : 'DESC';
 
     const params: unknown[] = [];
     const conditions: string[] = [];
 
-    // Optional filters
     if (status) {
       params.push(status);
       conditions.push(`a.status = $${params.length}`);
     } else {
-      // Public default: only published
       conditions.push(`a.status = 'published'`);
     }
 
@@ -54,7 +64,6 @@ export const getArticles = async (
 
     const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
 
-    // Pagination params
     params.push(limit);
     const limitIdx = params.length;
     params.push(offset);
@@ -84,7 +93,7 @@ export const getArticles = async (
 
     const [rows, countRow] = await Promise.all([
       db.query(sql, params),
-      db.query(countSql, params.slice(0, params.length - 2)), // exclude limit/offset
+      db.query(countSql, params.slice(0, params.length - 2)),
     ]);
 
     const total = parseInt(countRow.rows[0].total, 10);
@@ -111,9 +120,16 @@ export const getArticleBySlug = async (
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
+  if (USE_MOCK) {
+    const article = mockArticlesFull.find(a => a.slug === req.params.slug && a.status === 'published');
+    if (!article) { next(createError('Article not found', 404)); return; }
+    res.json(article);
+    return;
+  }
+
+
   try {
     const { slug } = req.params;
-
     // Atomically increment view_count and return the updated row
     const result = await db.query(
       `UPDATE articles SET view_count = view_count + 1
@@ -157,6 +173,7 @@ export const getArticleBySlug = async (
     next(err);
   }
 };
+
 
 // ---------------------------------------------------------------------------
 // POST /api/articles  (admin only)

@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import db from '../db';
 import { createError } from '../middleware/errorHandler';
+import { mockCategories, mockArticlesList } from '../mock/data';
+
+const USE_MOCK = process.env.USE_MOCK === 'true';
 
 // ---------------------------------------------------------------------------
 // GET /api/categories
@@ -10,6 +13,7 @@ export const getCategories = async (
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
+  if (USE_MOCK) { res.json(mockCategories); return; }
   try {
     const result = await db.query(
       `SELECT id, name, slug, icon_svg, article_count, created_at
@@ -21,6 +25,7 @@ export const getCategories = async (
     next(err);
   }
 };
+
 
 // ---------------------------------------------------------------------------
 // GET /api/categories/:slug/articles
