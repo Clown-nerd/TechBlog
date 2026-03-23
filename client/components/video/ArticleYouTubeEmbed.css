@@ -1,0 +1,85 @@
+/* ============================================================
+   ArticleYouTubeEmbed
+   Tokens: sourced from /Assets/style.css :root
+   ============================================================ */
+
+.yt-embed {
+  margin: 1.75rem 0;            /* matches .art-code-block margin */
+}
+
+/* ---- 16:9 responsive wrapper ---- */
+.yt-embed__wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;       /* 16:9 */
+  border-radius: 12px;          /* matches .code-block, .cat-card, .sidebar-widget */
+  overflow: hidden;
+  background: var(--char);
+  cursor: pointer;
+  box-shadow: var(--sh-card);
+  transition: box-shadow .22s, transform .22s var(--ease-spring);
+}
+
+.yt-embed__wrapper:hover {
+  box-shadow: var(--sh-hover);
+  transform: translateY(-3px);
+}
+
+/* ---- Thumbnail image ---- */
+.yt-embed__thumb {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ---- Dark overlay — --char at 60% ---- */
+.yt-embed__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(28, 28, 30, 0.60);  /* --char #1C1C1E @ 60% */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .25s var(--ease-enter);
+}
+
+.yt-embed__wrapper:hover .yt-embed__overlay {
+  background: rgba(28, 28, 30, 0.45);
+}
+
+/* ---- Gold play button ---- */
+.yt-embed__play {
+  width: 68px;
+  height: 68px;
+  filter: drop-shadow(0 4px 14px rgba(28, 28, 30, 0.45));
+  transition: transform .2s var(--ease-spring), filter .2s;
+}
+
+.yt-embed__wrapper:hover .yt-embed__play {
+  transform: scale(1.12);
+  filter: drop-shadow(0 6px 22px rgba(232, 163, 23, 0.45));
+}
+
+/* ---- Iframe (after click) ---- */
+.yt-embed__iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 12px;
+}
+
+/* ---- Caption ---- */
+.yt-embed__caption {
+  margin-top: .5rem;
+  font-family: 'Fraunces', serif;
+  font-size: .84rem;
+  color: var(--muted);
+  text-align: center;
+  font-style: italic;
+  line-height: 1.55;
+}

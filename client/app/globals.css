@@ -1,0 +1,54 @@
+/* ============================================================
+   Bash n Build — Global Tokens (mirrors /Assets/style.css :root)
+   Imported by app/layout.tsx — provides CSS variable baseline
+   for all Next.js components.
+   ============================================================ */
+
+:root {
+  /* Brand palette */
+  --green:   #1A4331;
+  --green2:  #2a6649;
+  --cream:   #F6F4F0;
+  --char:    #1C1C1E;
+  --terra:   #C84C31;
+  --gold:    #E8A317;
+  --muted:   #7a7268;
+  --border:  #ddd8d0;
+  --surface: #ffffff;
+
+  /* Shadows */
+  --sh-card:  0 2px 8px rgba(28,28,30,.06), 0 1px 2px rgba(28,28,30,.04);
+  --sh-hover: 0 8px 28px rgba(28,28,30,.11), 0 2px 6px rgba(28,28,30,.06);
+  --sh-float: 0 16px 48px rgba(28,28,30,.13), 0 4px 12px rgba(28,28,30,.07);
+
+  /* Easings */
+  --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-enter:  cubic-bezier(0, 0, .2, 1);
+}
+
+/* Dark mode overrides (matches html.dark in style.css) */
+html.dark {
+  --cream:   #0f0f0e;
+  --char:    #E8E4DE;
+  --border:  #2a2926;
+  --muted:   #7a7670;
+  --surface: #191917;
+}
+
+/* Reset — mirrors style.css */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  background: var(--cream);
+  color: var(--char);
+  overflow-x: hidden;
+  transition: background .32s var(--ease-enter), color .32s var(--ease-enter);
+}
+
+a { text-decoration: none; color: inherit; }
+
+/* Typography helpers (match style.css) */
+.t-display { font-family: 'Fraunces', serif; }
+.t-mono    { font-family: 'IBM Plex Mono', monospace; }
