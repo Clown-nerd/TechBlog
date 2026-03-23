@@ -1,4 +1,4 @@
-import Header from '@/components/Header';
+import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 
 export default function PublicLayout({
@@ -7,12 +7,10 @@ export default function PublicLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
-      <main className="flex-grow container mx-auto px-4 py-8">
-        {children}
-      </main>
+    <>
+      <Navigation />
+      {children}
       <Footer />
-    </div>
+    </>
   )
 }

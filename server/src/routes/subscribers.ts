@@ -17,5 +17,6 @@ const router = Router();
 
 router.post('/', subscribeRateLimiter, validateBody(SubscribeSchema), subscribersController.subscribe);
 router.get('/', authenticate, subscribersController.getSubscribers);
+router.delete('/:id', authenticate, subscribersController.deleteSubscriber);
 
 export default router;
