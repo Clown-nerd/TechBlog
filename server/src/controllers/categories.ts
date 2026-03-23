@@ -35,6 +35,15 @@ export const getArticlesByCategory = async (
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
+  if (USE_MOCK) {
+    const { slug } = req.params;
+    const category = mockCategories.find(c => c.slug === slug);
+    if (!category) { next(createError('Category not found', 404)); return; }
+    const data = mockArticlesList.filter((a: any) => a.category?.slug === slug);
+    res.json({ category, data, meta: { page: 1, limit: 20 } });
+    return;
+  }
+
   try {
     const { slug } = req.params;
     const page  = Math.max(1, parseInt((req.query.page  as string) || '1',  10));

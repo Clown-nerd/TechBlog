@@ -17,6 +17,13 @@ export const subscribe = async (
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
+  if (USE_MOCK) {
+    res.status(201).json({
+      message: "You're in! Check your inbox for a welcome email from the Silicon Savannah.",
+      subscriber: { id: 99, email: req.body.email, first_name: req.body.first_name ?? null, last_name: req.body.last_name ?? null, topic_preferences: req.body.topic_preferences ?? [], subscribed_at: new Date().toISOString(), is_active: true },
+    });
+    return;
+  }
   try {
     const input: SubscribeInput = req.body;
     const { email, first_name, last_name, topic_preferences } = input;
@@ -62,6 +69,11 @@ export const getSubscribers = async (
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
+  if (USE_MOCK) {
+    const active = mockSubscribers.filter(s => s.is_active);
+    res.json({ data: active, meta: { page: 1, limit: 20, total_count: active.length } });
+    return;
+  }
   try {
     const page  = Math.max(1, parseInt((req.query.page  as string) || '1',  10));
     const limit = Math.min(100, parseInt((req.query.limit as string) || '20', 10));
@@ -107,6 +119,10 @@ export const deleteSubscriber = async (
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
+  if (USE_MOCK) {
+    res.json({ message: 'Subscriber removed (soft deleted)' });
+    return;
+  }
   try {
     const id = parseInt(req.params.id, 10);
     if (isNaN(id)) {
