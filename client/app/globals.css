@@ -710,3 +710,79 @@ html.dark .sr-title { color:#E8E4DE; }
 html.dark .pill { background:rgba(26,67,49,.25); color:#7ee787; }
 .divider { height:1px; background:var(--border); margin:2rem 0; }
 .section-h2-sm { font-family:'Fraunces',serif; font-size:1.35rem; font-weight:700; margin-bottom:1.25rem; }
+
+/* MOBILE RESPONSIVE FIXES (< 768px) */
+@media (max-width: 768px) {
+  /* 1. NAV */
+  nav {
+    height: auto;
+    min-height: 60px;
+  }
+  .nav-logo {
+    font-size: 1.1rem;
+  }
+  .nav-links {
+    display: none;
+  }
+
+  /* 2. HERO */
+  .hero {
+    display: flex;
+    flex-direction: column;
+  }
+  .hero-left {
+    clip-path: none;
+    min-height: 50vh;
+    padding: 3rem 1.5rem;
+  }
+  .hero-right {
+    padding: 2rem 1.5rem;
+    min-height: auto;
+  }
+
+  /* 3. GENERAL OVERFLOW */
+  .section, 
+  .newsletter, 
+  .about-body, 
+  .feed-layout, 
+  .art-page-wrap, 
+  .search-pg {
+    padding: 2rem 1rem;
+  }
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .stat-band-inner {
+    grid-template-columns: 1fr 1fr;
+  }
+  .arts-grid {
+    display: flex;
+    flex-direction: column;
+  }
+  .art-3col {
+    display: flex;
+    flex-direction: column;
+  }
+  .regions-grid {
+    grid-template-columns: 1fr;
+  }
+  .two-col {
+    grid-template-columns: 1fr;
+  }
+  .team-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* 4. HERO TEXT & NEWSLETTER */
+  .hero-h1 {
+    font-size: clamp(2rem, 8vw, 3rem);
+  }
+  .newsletter {
+    flex-direction: column;
+  }
+  .nl-form {
+    min-width: unset;
+    width: 100%;
+  }
+}

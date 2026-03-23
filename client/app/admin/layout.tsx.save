@@ -1,0 +1,39 @@
+OBimport AdminNavLinks from '@/components/admin/AdminNavLinks';
+OOOOB
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ display: 'flex', minHeight: '100vh' }}>
+      {/* Sidebar nav — matches style.css nav colours */}
+      <aside style={{
+        width: 240,
+        background: 'var(--green)',
+        padding: '1.5rem 1.25rem',
+        flexShrink: 0,
+      }}>
+        <div style={{
+          fontFamily: "'Fraunces', serif",
+          fontSize: '1.15rem',
+          fontWeight: 900,
+          color: '#F6F4F0',
+          marginBottom: '2rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+        }}>
+          <span style={{
+            width: 7, height: 7,
+            background: 'var(--terra)',
+            borderRadius: '50%',
+          }} />
+          CMS
+        </div>
+        <AdminNavLinks />
+      </aside>
+
+      {/* Main content */}
+      <main style={{ flex: 1, background: 'var(--cream)', minWidth: 0 }}>
+        {children}
+      </main>
+    </div>
+  );
+}
