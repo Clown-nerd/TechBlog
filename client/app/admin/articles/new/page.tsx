@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import ArticleEditor from '@/components/admin/ArticleEditor';
 import EditorSidebar, { ArticleFormData } from '@/components/admin/EditorSidebar';
+import ArticlePreview from '@/components/admin/ArticlePreview';
 import { useAutoSave } from '@/lib/useAutoSave';
 import { useUnsavedChanges } from '@/lib/useUnsavedChanges';
 import '@/components/admin/editor.css';
@@ -31,6 +32,7 @@ export default function NewArticlePage() {
   const [categories, setCategories] = useState<any[]>([]);
   const [authors, setAuthors] = useState<any[]>([]);
   const [showDraftBanner, setShowDraftBanner] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   useUnsavedChanges(isDirty);
 
@@ -48,6 +50,7 @@ export default function NewArticlePage() {
   // Check for existing draft on mount
   useEffect(() => {
     if (hasDraft()) setShowDraftBanner(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const restoreDraft = useCallback(() => {
@@ -96,7 +99,7 @@ export default function NewArticlePage() {
           reading_time_minutes: form.reading_time_minutes,
           author_id: form.author_id,
           category_id: form.category_id,
-          tag_ids: [],  // Tags created on-the-fly would need a separate API call
+          tag_ids: [],
         }),
       });
       if (!res.ok) {
@@ -107,41 +110,74 @@ export default function NewArticlePage() {
       clearDraft();
       setIsDirty(false);
       alert('Article saved successfully!');
-    } catch (err) {
+    } catch {
       alert('Network error — could not save.');
     } finally {
       setSaving(false);
     }
   }, [form, body, clearDraft]);
 
-  return (
-    <div className="cms-editor-page">
-      {/* Header */}
-      <div className="cms-page-hdr">
-        <h1 className="cms-page-title">New Article</h1>
-        <div className="cms-page-actions">
-          <button className="cms-btn-ghost" onClick={save}>Save Draft</button>
-          <button className="cms-btn-primary" onClick={handlePublish} disabled={saving}>
-            {saving ? 'Saving…' : form.status === 'published' ? 'Publish' : 'Save Draft'}
-          </button>
-        </div>
+  const header = (
+    <div className="cms-page-hdr">
+      <h1 className="cms-page-title">New Article</h1>
+      <div className="cms-page-actions">
+        <button
+          id="preview-toggle-btn"
+          className={`cms-btn-preview${previewOpen ? ' is-active' : ''}`}
+          onClick={() => setPreviewOpen(v => !v)}
+        >
+          {previewOpen ? '← Edit' : 'Preview ↗'}
+        </button>
+        <button className="cms-btn-ghost" onClick={save}>Save Draft</button>
+        <button className="cms-btn-primary" onClick={handlePublish} disabled={saving}>
+          {saving ? 'Saving…' : form.status === 'published' ? 'Publish' : 'Save Draft'}
+        </button>
       </div>
+    </div>
+  );
 
-      {/* Draft recovery banner */}
-      {showDraftBanner && (
-        <div className="cms-draft-banner">
-          <span>📝 You have an unsaved draft from a previous session.</span>
-          <div>
-            <button className="cms-draft-banner__restore" onClick={restoreDraft}>Restore</button>
-            <button className="cms-draft-banner__discard" onClick={discardDraft}>Discard</button>
-          </div>
+  const draftBanner = showDraftBanner && (
+    <div className="cms-draft-banner">
+      <span>📝 You have an unsaved draft from a previous session.</span>
+      <div>
+        <button className="cms-draft-banner__restore" onClick={restoreDraft}>Restore</button>
+        <button className="cms-draft-banner__discard" onClick={discardDraft}>Discard</button>
+      </div>
+    </div>
+  );
+
+  if (previewOpen) {
+    return (
+      <div className="cms-editor-page--preview">
+        <div className="cms-editor-left">
+          {header}
+          {draftBanner}
+          <ArticleEditor initialContent={body} onChange={handleBodyChange} />
+          <EditorSidebar
+            form={form}
+            onChange={handleFormChange}
+            body={body}
+            categories={categories}
+            authors={authors}
+            isDirty={isDirty}
+            lastSavedAt={lastSavedAt}
+          />
         </div>
-      )}
+        <ArticlePreview
+          form={form}
+          body={body}
+          authors={authors}
+          categories={categories}
+        />
+      </div>
+    );
+  }
 
-      {/* Editor */}
+  return (
+    <div className="cms-editor-page--normal">
+      {header}
+      {draftBanner}
       <ArticleEditor initialContent={body} onChange={handleBodyChange} />
-
-      {/* Sidebar */}
       <EditorSidebar
         form={form}
         onChange={handleFormChange}

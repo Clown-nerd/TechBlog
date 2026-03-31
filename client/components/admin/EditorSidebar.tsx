@@ -18,6 +18,12 @@ export interface ArticleFormData {
   status: 'draft' | 'published';
   reading_time_minutes: number;
   youtube_video_id: string;
+  seo_title?: string;
+  meta_description?: string;
+  focus_keyword?: string;
+  og_image_url?: string;
+  canonical_url?: string;
+  no_index?: boolean;
 }
 
 interface EditorSidebarProps {
@@ -225,6 +231,121 @@ export default function EditorSidebar({
 
         <div className="cms-meta-row" style={{ marginTop: '.5rem' }}>
           Reading time: <span className="cms-meta-row__val">{form.reading_time_minutes} min</span>
+        </div>
+      </div>
+      {/* ── SEO & META ────────────────────────────────────────── */}
+      <div className="cms-sidebar-card">
+        <div className="cms-sidebar-card__title" style={{ fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase", color: "var(--gold)" }}>
+          SEO & META
+        </div>
+
+        <div className="cms-field">
+          <label className="cms-label">SEO Title</label>
+          <input
+            className="cms-input"
+            value={form.seo_title || ''}
+            onChange={(e) => onChange({ seo_title: e.target.value.slice(0, 60) })}
+            placeholder="Defaults to article title if empty"
+          />
+          <div
+            className="cms-char-count"
+            style={{
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontSize: "0.68rem",
+              textAlign: "right",
+              color: (form.seo_title?.length || 0) >= 55 ? "var(--terra)" : "inherit"
+            }}
+          >
+            {form.seo_title?.length || 0}/60
+          </div>
+        </div>
+
+        <div className="cms-field">
+          <label className="cms-label">Meta Description</label>
+          <textarea
+            className="cms-textarea"
+            value={form.meta_description || ''}
+            onChange={(e) => onChange({ meta_description: e.target.value })}
+            placeholder="Search snippet summary..."
+            rows={3}
+          />
+          <div
+            className="cms-char-count"
+            style={{
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontSize: "0.68rem",
+              textAlign: "right",
+              color: (form.meta_description?.length || 0) >= 160 ? "var(--terra)" : (form.meta_description?.length || 0) >= 155 ? "var(--gold)" : (form.meta_description?.length || 0) >= 120 ? "var(--green2)" : "inherit"
+            }}
+          >
+            {form.meta_description?.length || 0}/160
+          </div>
+          {/* Google Preview */}
+          <div style={{ marginTop: "1rem", backgroundColor: "var(--cream)", padding: "0.8rem", borderRadius: "8px", border: "1px solid var(--border)", fontSize: "0.85rem" }}>
+            <div style={{ color: "var(--muted)", fontSize: "0.75rem", marginBottom: "0.2rem" }}>bashnbuild.co.ke/articles/{form.slug || "slug"}</div>
+            <div style={{ color: "#1a0dab", fontSize: "1.05rem", fontFamily: "'IBM Plex Sans', sans-serif" }}>{form.seo_title || form.title || "SEO Title"}</div>
+            <div style={{ color: "var(--muted)", marginTop: "0.2rem", lineHeight: "1.4" }}>{form.meta_description || "Meta description preview..."}</div>
+          </div>
+        </div>
+
+        <div className="cms-field">
+          <label className="cms-label">Focus Keyword</label>
+          <input
+            className="cms-input"
+            value={form.focus_keyword || ''}
+            onChange={(e) => onChange({ focus_keyword: e.target.value })}
+            placeholder="e.g. Nextjs server components"
+          />
+          {form.focus_keyword && (() => {
+            const kw = form.focus_keyword.trim().toLowerCase();
+            const occurrences = kw ? (stripHtml(body).toLowerCase().split(kw).length - 1) : 0;
+            const color = occurrences >= 3 && occurrences <= 8 ? "var(--green2)" : occurrences > 0 ? "var(--gold)" : "var(--terra)";
+            return (
+              <div style={{ marginTop: "0.3rem", fontSize: "0.75rem", color }}>
+                {occurrences} occurrences found in body
+              </div>
+            );
+          })()}
+        </div>
+
+        <div className="cms-field">
+          <label className="cms-label">Open Graph Image URL</label>
+          <input
+            className="cms-input"
+            value={form.og_image_url || ''}
+            onChange={(e) => onChange({ og_image_url: e.target.value })}
+            placeholder="Falls back to cover image if empty"
+          />
+          {(form.og_image_url || form.cover_image_url) && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              className="cms-cover-preview"
+              src={form.og_image_url || form.cover_image_url}
+              alt="OG Preview thumbnail"
+              style={{ marginTop: "0.5rem", borderRadius: "4px", maxHeight: "80px", objectFit: "cover" }}
+            />
+          )}
+        </div>
+
+        <div className="cms-field">
+          <label className="cms-label">Canonical URL</label>
+          <input
+            className="cms-input"
+            value={form.canonical_url || ''}
+            onChange={(e) => onChange({ canonical_url: e.target.value })}
+            placeholder="Leave empty for default"
+          />
+        </div>
+
+        <div className="cms-field" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <input
+            type="checkbox"
+            id="no_index_toggle"
+            checked={form.no_index || false}
+            onChange={(e) => onChange({ no_index: e.target.checked })}
+            style={{ accentColor: "var(--terra)", width: "16px", height: "16px" }}
+          />
+          <label htmlFor="no_index_toggle" className="cms-label" style={{ margin: 0, cursor: "pointer" }}>Exclude from search engines</label>
         </div>
       </div>
     </div>

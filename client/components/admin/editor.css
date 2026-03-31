@@ -566,3 +566,174 @@
   color: var(--muted);
   margin-left: .5rem;
 }
+
+/* ================================================================
+   PREVIEW TOGGLE BUTTON
+   ================================================================ */
+.cms-btn-preview {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .7rem 1.25rem;
+  font-size: .82rem;
+  font-weight: 500;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: .04em;
+  color: var(--char);
+  background: transparent;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color .18s, color .18s, background .18s;
+}
+
+.cms-btn-preview:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.cms-btn-preview.is-active {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(232, 163, 23, .05);
+}
+
+/* ================================================================
+   SPLIT-VIEW ROOT LAYOUT (preview mode)
+   ================================================================ */
+.cms-editor-page--preview {
+  display: grid;
+  grid-template-columns: 1fr 540px;
+  gap: 0;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  height: calc(100vh - 60px); /* subtract admin header */
+  overflow: hidden;
+}
+
+/* Left column: editor + sidebar scrollable */
+.cms-editor-left {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 1.5rem;
+  padding: 1.75rem 1.5rem 4rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-right: 1px solid var(--border);
+}
+
+.cms-editor-left .cms-page-hdr {
+  grid-column: 1 / -1;
+}
+
+/* When NO preview, the default layout keeps max-width */
+.cms-editor-page--normal {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 2rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 2.5rem 4rem;
+}
+
+.cms-editor-page--normal-3col {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px 300px;
+  gap: 2rem;
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 2rem 2.5rem 4rem;
+}
+
+/* ================================================================
+   PREVIEW PANEL (right column)
+   ================================================================ */
+.preview-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  height: 100%;
+  overflow-y: auto;
+  background: var(--cream);
+}
+
+.preview-viewport-wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 1rem 1.25rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.preview-viewport-wrap:last-child {
+  border-bottom: none;
+}
+
+/* DESKTOP / MOBILE label */
+.preview-viewport-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.preview-viewport-label::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0.6;
+}
+
+/* Desktop iframe container */
+.preview-viewport--desktop {
+  width: 100%;
+  height: 480px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--sh-card);
+  background: #fff;
+}
+
+.preview-iframe--desktop {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+/* Mobile shell + iframe */
+.preview-viewport--mobile-outer {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 0.25rem;
+}
+
+.preview-mobile-shell {
+  width: 375px;
+  height: 600px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--sh-float);
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.preview-iframe--mobile {
+  width: 375px;
+  height: 600px;
+  border: none;
+  display: block;
+  overflow-y: auto;
+}

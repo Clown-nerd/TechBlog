@@ -24,16 +24,58 @@ const Icon = ({ d, ...props }: { d: string } & React.SVGProps<SVGSVGElement>) =>
 
 // ── Props ──────────────────────────────────────────────────────────────────
 interface ArticleEditorProps {
+  articleId?: string;
+  status?: string;
   initialContent?: string;
   onChange: (html: string) => void;
 }
 
-export default function ArticleEditor({ initialContent = '', onChange }: ArticleEditorProps) {
+export default function ArticleEditor({ articleId, status = 'draft', initialContent = '', onChange }: ArticleEditorProps) {
   const [ytOpen, setYtOpen] = useState(false);
   const [ytUrl, setYtUrl] = useState('');
   const [ytTitle, setYtTitle] = useState('');
   const [imgOpen, setImgOpen] = useState(false);
   const [imgUrl, setImgUrl] = useState('');
+
+  const [checklist, setChecklist] = useState<boolean[]>(Array(10).fill(false));
+  const [checklistOpen, setChecklistOpen] = useState(true);
+
+  useEffect(() => {
+    if (!articleId) return;
+    try {
+      const stored = localStorage.getItem(`bnb_checklist_${articleId}`);
+      if (stored) setChecklist(JSON.parse(stored));
+    } catch {}
+  }, [articleId]);
+
+  const toggleChecklist = (index: number) => {
+    setChecklist(prev => {
+      const next = [...prev];
+      next[index] = !next[index];
+      if (articleId) {
+        localStorage.setItem(`bnb_checklist_${articleId}`, JSON.stringify(next));
+      }
+      return next;
+    });
+  };
+
+  const CHECKLIST_ITEMS = [
+    'Title is clear and under 70 characters',
+    'Meta description / excerpt written (150-160 chars)',
+    'Cover image uploaded or URL set',
+    'Category and tags assigned',
+    'Reading time under 15 minutes',
+    'All code blocks have language specified',
+    'Internal links added (min 1)',
+    'YouTube video embedded if tutorial',
+    'SEO title differs from article title',
+    'Article reviewed for factual accuracy'
+  ];
+
+  const completedCount = checklist.filter(Boolean).length;
+  let barColor = 'var(--green2)';
+  if (status === 'published' && completedCount < 6) barColor = 'var(--terra)';
+  else if (completedCount >= 8) barColor = 'var(--gold)';
 
   const editor = useEditor({
     extensions: [
@@ -249,6 +291,45 @@ export default function ArticleEditor({ initialContent = '', onChange }: Article
       {/* ── Editor body ──────────────────────────────────────────── */}
       <div className="cms-tiptap-wrap">
         <EditorContent editor={editor} />
+      </div>
+
+      {/* ── Editorial Checklist ─────────────────────────────────── */}
+      <div style={{ marginTop: '2rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden', boxShadow: 'var(--sh-card)' }}>
+        <div 
+          onClick={() => setChecklistOpen(!checklistOpen)}
+          style={{ padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', borderBottom: checklistOpen ? '1px solid var(--border)' : 'none', background: 'rgba(28,28,30,0.02)' }}
+        >
+          <div>
+            <h4 style={{ fontFamily: '"Fraunces", serif', fontSize: '1.1rem', fontWeight: 700, margin: 0, color: 'var(--char)' }}>Editorial Checklist</h4>
+            <div style={{ fontSize: '0.8rem', color: 'var(--muted)', marginTop: '0.4rem', fontFamily: '"IBM Plex Sans", sans-serif' }}>
+              {completedCount}/10 checklist items complete
+            </div>
+            {/* Progress Bar Container */}
+            <div style={{ height: '6px', background: 'var(--border)', borderRadius: '3px', marginTop: '0.75rem', overflow: 'hidden', width: '200px' }}>
+              <div style={{ height: '100%', width: `${(completedCount / 10) * 100}%`, background: barColor, transition: 'width 0.3s ease, background 0.3s ease' }} />
+            </div>
+          </div>
+          <div style={{ color: 'var(--muted)' }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: checklistOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+        
+        {checklistOpen && (
+          <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+            {CHECKLIST_ITEMS.map((item, i) => {
+              const isDone = checklist[i];
+              return (
+                <label key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', cursor: 'pointer', fontSize: '0.9rem', color: isDone ? 'var(--muted)' : 'var(--char)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '4px', border: isDone ? 'none' : '1.5px solid var(--border)', background: isDone ? 'var(--green)' : 'transparent', color: '#fff', flexShrink: 0, marginTop: '2px' }}>
+                    {isDone && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>}
+                  </div>
+                  <input type="checkbox" className="sr-only" style={{ display: 'none' }} checked={isDone} onChange={() => toggleChecklist(i)} />
+                  <span style={{ textDecoration: isDone ? 'line-through' : 'none', lineHeight: '1.4' }}>{item}</span>
+                </label>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
