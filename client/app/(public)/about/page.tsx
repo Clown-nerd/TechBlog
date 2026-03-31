@@ -62,9 +62,9 @@ export default function AboutPage() {
       </div>
       <div className="team-grid">
         {[
-          { name: 'Daniel Mose', role: 'Editor in Chief', initials: 'DM', bg: 'linear-gradient(135deg,#091a10,var(--green))', bio: 'Former Engineering Lead at Safaricom. James oversees editorial direction and technical accuracy across all categories.' },
-          { name: 'Elphas Obado', role: 'Security Editor', initials: 'EO', bg: 'linear-gradient(135deg,#1a0e00,#3d1f00)', bio: 'Security researcher and OSCP-certified pentester. Amina leads all cybersecurity and privacy coverage for East Africa.' },
-          { name: 'Nickson Nyagol', role: 'AI & ML Lead', initials: 'NN', bg: 'linear-gradient(135deg,#0a0a1a,#16213e)', bio: 'ML engineer and researcher focused on African-language NLP. Grace heads the AI & ML editorial vertical and writes the best-read articles on the platform.' },
+          { name: 'Daniel Mose', role: 'Editor in Chief', initials: 'DM', bg: 'linear-gradient(135deg,#091a10,var(--green))', bio: 'Former Engineering Lead at Safaricom. Daniel oversees editorial direction and technical accuracy across all categories.' },
+          { name: 'Elphas Obado', role: 'Security Editor', initials: 'EO', bg: 'linear-gradient(135deg,#1a0e00,#3d1f00)', bio: 'Security researcher and OSCP-certified pentester. Elphas leads all cybersecurity and privacy coverage for East Africa.' },
+          { name: 'Nickson Nyagol', role: 'AI & ML Lead', initials: 'NN', bg: 'linear-gradient(135deg,#0a0a1a,#16213e)', bio: 'ML engineer and researcher focused on African-language NLP. Nickson heads the AI & ML editorial vertical and writes the best-read articles on the platform.' },
           { name: 'Reinhard Carlton', role: 'Startups Editor', initials: 'RC', bg: 'linear-gradient(135deg,#1a1500,#3a2e00)', bio: 'Early-stage investor and former CTO of two Nairobi startups. Reinhard covers VC, product, and the business side of Kenya\'s tech ecosystem.' }
         ].map((member, i) => (
           <div key={i} className="team-card">
