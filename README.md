@@ -1,4 +1,4 @@
-# Bash n Build
+﻿# Bash n Build
 
 A PERN stack monorepo for a tech blog targeting the Kenyan and pan-African developer community.
 
