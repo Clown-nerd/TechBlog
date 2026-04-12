@@ -16,8 +16,9 @@ import embedsRouter       from './routes/embeds';
 import subscribersRouter  from './routes/subscribers';
 import searchRouter       from './routes/search';
 
-dotenv.config();
+import { env } from './config/env';
 
+// Environment variables are now validated via config/env.ts
 const app = express();
 const PORT = process.env.PORT || 5000;
 

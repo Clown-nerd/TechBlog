@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import path from 'path';
-import db from '../index';
+import db from './index';
 
 const MIGRATIONS_DIR = path.join(__dirname, 'migrations');
 
