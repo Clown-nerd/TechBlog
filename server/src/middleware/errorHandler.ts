@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import logger from '../utils/logger';
 
 export interface AppError extends Error {
   statusCode?: number;
@@ -16,13 +17,32 @@ export const errorHandler = (
   _next: NextFunction,
 ): void => {
   const statusCode = err.statusCode ?? 500;
-  const message = statusCode === 500 ? 'Internal server error' : err.message;
+  const isProduction = process.env.NODE_ENV === 'production';
 
-  if (statusCode === 500) {
-    console.error('[ERROR]', err);
+  // Always log 5xx errors; include stack in both envs for server-side visibility
+  if (statusCode >= 500) {
+    logger.error(err.message, {
+      statusCode,
+      stack: err.stack,
+      method: req.method,
+      url: req.originalUrl,
+    });
+  } else {
+    logger.warn(err.message, { statusCode, method: req.method, url: req.originalUrl });
   }
 
-  res.status(statusCode).json({ error: message });
+  // Never leak internal error detail or stack traces to the client in production
+  const clientMessage =
+    isProduction && statusCode >= 500 ? 'Internal server error' : err.message;
+
+  const responseBody: Record<string, unknown> = { error: clientMessage };
+
+  // Expose stack trace in development only — aids local debugging
+  if (!isProduction && err.stack) {
+    responseBody.stack = err.stack;
+  }
+
+  res.status(statusCode).json(responseBody);
 };
 
 /** Convenience factory for typed HTTP errors */

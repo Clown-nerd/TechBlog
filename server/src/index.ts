@@ -1,11 +1,13 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import morgan from 'morgan';
 import dotenv from 'dotenv';
 
 // Middleware
 import { rateLimiter } from './middleware/rateLimit';
 import { errorHandler } from './middleware/errorHandler';
+import logger from './utils/logger';
 
 // Routes
 import articlesRouter     from './routes/articles';
@@ -28,6 +30,15 @@ app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(rateLimiter); // global 100 req/15 min per IP limiter
+
+// ── HTTP request logging (morgan → winston) ──────────────────────────────────
+app.use(
+  morgan('combined', {
+    stream: { write: (msg: string) => logger.http(msg.trim()) },
+    // Skip health-check noise in production
+    skip: (_req, res) => process.env.NODE_ENV === 'production' && res.statusCode < 400,
+  }),
+);
 
 // ── Routes ───────────────────────────────────────────────────────────────────
 app.use('/api/articles',    articlesRouter);
@@ -52,7 +63,7 @@ app.use((_req, res) => {
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  logger.info(`Server running on port ${PORT}`, { env: process.env.NODE_ENV ?? 'development' });
 });
 
 export default app;
