@@ -1,0 +1,54 @@
+name: Production Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "🚀 Starting Deployment..."
+            cd ~/Projects/TechBlog
+            
+            echo "📥 Pulling latest changes from main branch..."
+            git pull origin main
+            
+            echo "🏗️ Building and restarting Docker containers..."
+            docker-compose -f docker-compose.prod.yml up -d --build
+            
+            echo "🧹 Cleaning up unused Docker objects..."
+            docker system prune -f
+            
+            echo "🔍 Performing Health Check..."
+            # Wait a few seconds for services to initialize
+            sleep 10
+            if curl -f http://localhost/health; then
+              echo "✅ Health Check Passed!"
+            else
+              echo "❌ Health Check Failed!"
+              exit 1
+            fi
+            echo "🎉 Deployment Successful!"
+
+      - name: Send Discord Notification
+        if: always()
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: ${{ job.status }}
+          title: "Production Deployment"
+          description: "Deployment of branch `main` to production server."
+          color: ${{ job.status == 'success' && '0x00ff00' || '0xff0000' }}
+          username: GitHub Actions

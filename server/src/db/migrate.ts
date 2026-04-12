@@ -6,7 +6,10 @@ const MIGRATIONS_DIR = path.join(__dirname, 'migrations');
 
 async function runMigrations() {
   // Simple ordered runner — reads each .sql file alphabetically and executes it
-  const files = ['001_initial.sql']; // Extend this list as you add migrations
+  const files = [
+    '001_initial.sql',
+    '002_add_auth_and_roles.sql',
+  ]; // Extend this list as you add migrations
 
   for (const file of files) {
     const filePath = path.join(MIGRATIONS_DIR, file);
