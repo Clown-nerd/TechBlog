@@ -10,6 +10,7 @@ import { errorHandler } from './middleware/errorHandler';
 import logger from './utils/logger';
 
 // Routes
+import authRouter         from './routes/auth';
 import articlesRouter     from './routes/articles';
 import categoriesRouter   from './routes/categories';
 import authorsRouter      from './routes/authors';
@@ -41,6 +42,7 @@ app.use(
 );
 
 // ── Routes ───────────────────────────────────────────────────────────────────
+app.use('/api/auth',        authRouter);
 app.use('/api/articles',    articlesRouter);
 app.use('/api/categories',  categoriesRouter);
 app.use('/api/authors',     authorsRouter);
