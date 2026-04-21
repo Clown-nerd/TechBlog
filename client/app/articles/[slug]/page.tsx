@@ -8,6 +8,7 @@ import { parseArticleBody } from '@/lib/articleBodyParser';
 import ArticleBody from '@/components/article/ArticleBody';
 import ReadingProgressBar from '@/components/article/ReadingProgressBar';
 import ViewCountIncrement from '@/components/article/ViewCountIncrement';
+import CommentsSection from '@/components/article/CommentsSection';
 
 // ── Config ─────────────────────────────────────────────────────────────────
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
@@ -77,9 +78,9 @@ export default async function ArticlePage({
   // Split on [VIDEO:…] markers and sanitise each HTML segment
   const bodySegments = parseArticleBody(bodyWithIds);
 
-  const authorName = article.author_name || 'Bash n Build';
-  const categoryName = article.category_name || '';
-  const tags: string[] = article.tags || [];
+  const authorName = article.author?.name || article.author?.display_name || article.author_name || 'Bash n Build';
+  const categoryName = article.category?.name || article.category_name || '';
+  const tags: any[] = article.tags || [];
   const viewCount = (article.view_count || 0).toLocaleString();
 
   return (
@@ -156,9 +157,11 @@ export default async function ArticlePage({
                 <span>{viewCount} views</span>
                 {tags.length > 0 && (
                   <div style={{ marginLeft: 'auto', display: 'flex', gap: '.35rem' }}>
-                    {tags.slice(0, 3).map((t: string) => (
-                      <span key={t} className="pill">{t}</span>
-                    ))}
+                    {tags.slice(0, 3).map((t: any) => {
+                      const tagText = typeof t === 'string' ? t : (t.name || t.slug);
+                      const key = typeof t === 'string' ? t : (t.id || tagText);
+                      return <span key={key} className="pill">{tagText}</span>;
+                    })}
                   </div>
                 )}
               </div>
@@ -189,14 +192,23 @@ export default async function ArticlePage({
 
             {/* ── Author bio card ── */}
             <div className="author-bio-card">
-              <div className="bio-avatar">{initials(authorName)}</div>
+              <div className="bio-avatar">
+                {article.author?.avatar_url ? (
+                  <img src={article.author.avatar_url} alt={authorName} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                ) : (
+                  initials(authorName)
+                )}
+              </div>
               <div>
                 <div className="bio-name">{authorName}</div>
-                {article.author_bio && (
-                  <p className="bio-text">{article.author_bio}</p>
+                {(article.author?.bio || article.author_bio) && (
+                  <p className="bio-text">{article.author?.bio || article.author_bio}</p>
                 )}
               </div>
             </div>
+
+            {/* ── Comments Section ── */}
+            <CommentsSection comments={article.comments || []} />
           </article>
 
           {/* ── RIGHT: Sidebar rail ── */}
@@ -205,9 +217,11 @@ export default async function ArticlePage({
             {tags.length > 0 && (
               <div className="rail-card">
                 <div className="rail-title">Tags</div>
-                {tags.map((t: string) => (
-                  <span key={t} className="rail-tag">{t}</span>
-                ))}
+                {tags.map((t: any) => {
+                  const tagText = typeof t === 'string' ? t : (t.name || t.slug);
+                  const key = typeof t === 'string' ? t : (t.id || tagText);
+                  return <span key={key} className="rail-tag">{tagText}</span>;
+                })}
               </div>
             )}
 
