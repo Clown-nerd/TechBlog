@@ -18,6 +18,7 @@ import mediaRouter        from './routes/media';
 import embedsRouter       from './routes/embeds';
 import subscribersRouter  from './routes/subscribers';
 import searchRouter       from './routes/search';
+import commentsRouter     from './routes/comments';
 
 import { env } from './config/env';
 
@@ -50,6 +51,7 @@ app.use('/api/media',       mediaRouter);
 app.use('/api/embeds',      embedsRouter);
 app.use('/api/subscribers', subscribersRouter);
 app.use('/api/search',      searchRouter);
+app.use('/api/comments',    commentsRouter);
 
 // ── Health check ─────────────────────────────────────────────────────────────
 app.get('/health', (_req, res) => {
