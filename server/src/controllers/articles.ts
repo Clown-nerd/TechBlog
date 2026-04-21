@@ -33,63 +33,109 @@ export const getArticles = async (
     const { page, limit, category, tag, status, sort, dir } = q;
     const offset = (page - 1) * limit;
 
-    const sortCol = sort === 'view_count' ? 'a.view_count' : 'a.published_at';
-    const sortDir = dir === 'asc' ? 'ASC' : 'DESC';
-
     const params: unknown[] = [];
     const conditions: string[] = [];
 
-    if (status) {
-      params.push(status);
-      conditions.push(`a.status = $${params.length}`);
+    let sql = '';
+    let countSql = '';
+
+    if (sort === 'view_count') {
+      // Query mv_trending_articles for trending logic
+      if (category) {
+        params.push(category);
+        conditions.push(`category->>'slug' = $${params.length}`);
+      }
+
+      if (tag) {
+        params.push(tag);
+        conditions.push(
+          `EXISTS (
+            SELECT 1 FROM article_tags at2
+            JOIN tags t ON t.id = at2.tag_id
+            WHERE at2.article_id = mv_trending_articles.id AND t.slug = $${params.length}
+          )`,
+        );
+      }
+
+      const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+
+      params.push(limit);
+      const limitIdx = params.length;
+      params.push(offset);
+      const offsetIdx = params.length;
+
+      sql = `
+        SELECT
+          id, title, slug, excerpt, cover_image_url,
+          NULL AS youtube_video_id, 'published' AS status, reading_time_minutes,
+          view_count, published_at, published_at AS created_at,
+          author, category
+        FROM mv_trending_articles
+        ${where}
+        ORDER BY trending_score DESC
+        LIMIT $${limitIdx} OFFSET $${offsetIdx}
+      `;
+
+      countSql = `
+        SELECT COUNT(*) AS total
+        FROM mv_trending_articles
+        ${where}
+      `;
     } else {
-      conditions.push(`a.status = 'published'`);
+      const sortDir = dir === 'asc' ? 'ASC' : 'DESC';
+
+      if (status) {
+        params.push(status);
+        conditions.push(`a.status = $${params.length}`);
+      } else {
+        conditions.push(`a.status = 'published'`);
+      }
+
+      if (category) {
+        params.push(category);
+        conditions.push(`c.slug = $${params.length}`);
+      }
+
+      if (tag) {
+        params.push(tag);
+        conditions.push(
+          `EXISTS (
+            SELECT 1 FROM article_tags at2
+            JOIN tags t ON t.id = at2.tag_id
+            WHERE at2.article_id = a.id AND t.slug = $${params.length}
+          )`,
+        );
+      }
+
+      const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+
+      params.push(limit);
+      const limitIdx = params.length;
+      params.push(offset);
+      const offsetIdx = params.length;
+
+      sql = `
+        SELECT
+          a.id, a.title, a.slug, a.excerpt, a.cover_image_url,
+          a.youtube_video_id, a.status, a.reading_time_minutes,
+          a.view_count, a.published_at, a.created_at,
+          json_build_object('id', au.id, 'name', au.display_name, 'handle', au.username, 'avatar_url', au.avatar_url) AS author,
+          json_build_object('id', c.id, 'name', c.name, 'slug', c.slug)                                    AS category
+        FROM articles a
+        LEFT JOIN users      au ON au.id = a.author_id
+        LEFT JOIN categories c  ON c.id  = a.category_id
+        ${where}
+        ORDER BY a.published_at ${sortDir} NULLS LAST
+        LIMIT $${limitIdx} OFFSET $${offsetIdx}
+      `;
+
+      countSql = `
+        SELECT COUNT(*) AS total
+        FROM articles a
+        LEFT JOIN categories c ON c.id = a.category_id
+        ${where}
+      `;
     }
-
-    if (category) {
-      params.push(category);
-      conditions.push(`c.slug = $${params.length}`);
-    }
-
-    if (tag) {
-      params.push(tag);
-      conditions.push(
-        `EXISTS (
-          SELECT 1 FROM article_tags at2
-          JOIN tags t ON t.id = at2.tag_id
-          WHERE at2.article_id = a.id AND t.slug = $${params.length}
-        )`,
-      );
-    }
-
-    const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
-
-    params.push(limit);
-    const limitIdx = params.length;
-    params.push(offset);
-    const offsetIdx = params.length;
-
-    const sql = `
-      SELECT
-        a.id, a.title, a.slug, a.excerpt, a.cover_image_url,
-        a.youtube_video_id, a.status, a.reading_time_minutes,
-        a.view_count, a.published_at, a.created_at,
-        json_build_object('id', au.id, 'name', au.name, 'handle', au.handle, 'avatar_url', au.avatar_url) AS author,
-        json_build_object('id', c.id, 'name', c.name, 'slug', c.slug)                                    AS category
-      FROM articles a
-      LEFT JOIN authors    au ON au.id = a.author_id
-      LEFT JOIN categories c  ON c.id  = a.category_id
-      ${where}
-      ORDER BY ${sortCol} ${sortDir} NULLS LAST
-      LIMIT $${limitIdx} OFFSET $${offsetIdx}
-    `;
-
-    const countSql = `
-      SELECT COUNT(*) AS total
-      FROM articles a
-      LEFT JOIN categories c ON c.id = a.category_id
-      ${where}
-    `;
 
     const [rows, countRow] = await Promise.all([
       db.query(sql, params),
@@ -149,7 +195,7 @@ export const getArticleBySlug = async (
 
     // Fetch related data
     const [authorRow, categoryRow, tagsRow] = await Promise.all([
-      db.query('SELECT id, name, handle, bio, avatar_url, role, expertise FROM authors WHERE id = $1', [
+      db.query('SELECT id, display_name AS name, username AS handle, bio, avatar_url, role, expertise FROM users WHERE id = $1', [
         article.author_id,
       ]),
       article.category_id

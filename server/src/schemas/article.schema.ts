@@ -36,7 +36,7 @@ export const CreateArticleSchema = z.object({
   youtube_video_id:     z.string().max(20).optional().nullable(),  // raw ID only
   status:               statusEnum.default('draft'),
   reading_time_minutes: z.number().int().min(1).default(1),
-  author_id:            z.number().int().positive(),
+  author_id:            z.number().int().positive(), // references users.id
   category_id:          z.number().int().positive().optional().nullable(),
   tag_ids:              z.array(z.number().int().positive()).default([]),
 });
