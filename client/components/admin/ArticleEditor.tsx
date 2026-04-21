@@ -4,7 +4,11 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import Placeholder from '@tiptap/extension-placeholder';
+import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
+import { createLowlight, common } from 'lowlight';
 import { useState, useCallback, useMemo, useEffect } from 'react';
+
+const lowlight = createLowlight(common);
 
 // ── YouTube URL → ID extractor (shared with AdminVideoInsert) ──────────────
 const YT_URL_RE =
@@ -81,9 +85,19 @@ export default function ArticleEditor({ articleId, status = 'draft', initialCont
     extensions: [
       StarterKit.configure({
         heading: { levels: [1, 2, 3] },
-        codeBlock: { HTMLAttributes: { class: 'art-code-body' } },
+        codeBlock: false,
       }),
-      Image.configure({ inline: false }),
+      CodeBlockLowlight.configure({
+        lowlight,
+        defaultLanguage: 'javascript',
+      }),
+      Image.configure({
+        inline: false,
+        allowBase64: true,
+        HTMLAttributes: {
+          class: 'art-img-body',
+        },
+      }),
       Placeholder.configure({ placeholder: 'Start writing your article…' }),
     ],
     content: initialContent,

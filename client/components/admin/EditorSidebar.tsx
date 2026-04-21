@@ -5,7 +5,7 @@ import { generateSlug, calculateReadingTime, stripHtml } from '@/lib/editorUtils
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface Category { id: number; name: string; slug: string; }
-interface Author   { id: number; name: string; handle: string; }
+interface User     { id: number; name: string; handle: string; role?: string; }
 
 export interface ArticleFormData {
   title: string;
@@ -31,13 +31,13 @@ interface EditorSidebarProps {
   onChange: (updates: Partial<ArticleFormData>) => void;
   body: string; // article HTML for word count
   categories: Category[];
-  authors: Author[];
+  users: User[];
   isDirty: boolean;
   lastSavedAt: Date | null;
 }
 
 export default function EditorSidebar({
-  form, onChange, body, categories, authors, isDirty, lastSavedAt,
+  form, onChange, body, categories, users, isDirty, lastSavedAt,
 }: EditorSidebarProps) {
   const [tagInput, setTagInput] = useState('');
   const [slugEdited, setSlugEdited] = useState(false);
@@ -164,15 +164,15 @@ export default function EditorSidebar({
         </div>
 
         <div className="cms-field">
-          <label className="cms-label">Author</label>
+          <label className="cms-label">Author / Admin</label>
           <select
             className="cms-select"
             value={form.author_id ?? ''}
             onChange={(e) => onChange({ author_id: e.target.value ? Number(e.target.value) : null })}
           >
             <option value="">Select author…</option>
-            {authors.map(a => (
-              <option key={a.id} value={a.id}>{a.name} (@{a.handle})</option>
+            {users.map(u => (
+              <option key={u.id} value={u.id}>{u.name} (@{u.handle}) {u.role === 'admin' ? '[Admin]' : ''}</option>
             ))}
           </select>
         </div>

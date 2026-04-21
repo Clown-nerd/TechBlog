@@ -30,7 +30,7 @@ export default function NewArticlePage() {
   const [isDirty, setIsDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
-  const [authors, setAuthors] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
   const [showDraftBanner, setShowDraftBanner] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
 
@@ -41,10 +41,10 @@ export default function NewArticlePage() {
     data: { body, form },
   });
 
-  // Fetch categories and authors
+  // Fetch categories and authors (unified users)
   useEffect(() => {
-    fetch(`${API}/api/categories`).then(r => r.json()).then(setCategories).catch(() => {});
-    fetch(`${API}/api/authors`).then(r => r.json()).then(d => setAuthors(Array.isArray(d) ? d : d.data || [])).catch(() => {});
+    fetch(`${API}/api/categories`).then(r => r.json()).then(setCategories).catch(() => []);
+    fetch(`${API}/api/authors`).then(r => r.json()).then(d => setUsers(Array.isArray(d) ? d : d.data || [])).catch(() => []);
   }, []);
 
   // Check for existing draft on mount
@@ -158,7 +158,7 @@ export default function NewArticlePage() {
             onChange={handleFormChange}
             body={body}
             categories={categories}
-            authors={authors}
+            users={users}
             isDirty={isDirty}
             lastSavedAt={lastSavedAt}
           />
@@ -166,7 +166,7 @@ export default function NewArticlePage() {
         <ArticlePreview
           form={form}
           body={body}
-          authors={authors}
+          authors={users}
           categories={categories}
         />
       </div>
@@ -183,7 +183,7 @@ export default function NewArticlePage() {
         onChange={handleFormChange}
         body={body}
         categories={categories}
-        authors={authors}
+        users={users}
         isDirty={isDirty}
         lastSavedAt={lastSavedAt}
       />

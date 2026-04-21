@@ -44,7 +44,7 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<any[]>([]);
-  const [authors, setAuthors] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
   const [previewOpen, setPreviewOpen] = useState(false);
 
   // Version Control State
@@ -73,7 +73,7 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
       fetch(`${API}/api/authors`).then(r => r.json()).then(d => Array.isArray(d) ? d : d.data || []).catch(() => []),
     ]).then(([cats, auths]) => {
       setCategories(cats);
-      setAuthors(auths);
+      setUsers(auths);
     });
 
     try {
@@ -197,7 +197,7 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
             
             let authorInitials = 'ME';
             if (form.author_id) {
-              const author = authors.find(a => a.id === form.author_id);
+              const author = users.find(u => u.id === form.author_id);
               if (author && author.name) {
                 const names = author.name.split(' ');
                 authorInitials = names.length > 1 ? (names[0][0] + names[names.length - 1][0]).toUpperCase() : author.name.substring(0,2).toUpperCase();
@@ -275,7 +275,7 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
             onChange={handleFormChange}
             body={body}
             categories={categories}
-            authors={authors}
+            users={users}
             isDirty={isDirty}
             lastSavedAt={lastSavedAt}
           />
@@ -283,7 +283,7 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
         <ArticlePreview
           form={form}
           body={body}
-          authors={authors}
+          authors={users}
           categories={categories}
         />
       </div>
@@ -299,7 +299,7 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
         onChange={handleFormChange}
         body={body}
         categories={categories}
-        authors={authors}
+        users={users}
         isDirty={isDirty}
         lastSavedAt={lastSavedAt}
       />
