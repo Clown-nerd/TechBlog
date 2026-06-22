@@ -171,7 +171,7 @@ function SearchResults() {
               key={art.id}
               href={`/articles/${art.slug}`}
               className="sr-item"
-              style={{ display: 'grid', textDecoration: 'none' }}
+              style={{ display: 'grid', textDecoration: 'none', minWidth: 0 }}
             >
               <div
                 className="sr-img"

@@ -10,6 +10,24 @@
     href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="Assets/style.css">
+  <style>
+    .ticker-track { flex-shrink: 0; }
+    @media (max-width: 768px) {
+      .subscribe-box { padding: 1.5rem 1rem; }
+      .form-row { grid-template-columns: 1fr; gap: 0.75rem; }
+      .hero-left { padding: 2.5rem 1.25rem 2rem; }
+      .nl-form { flex-direction: column; min-width: unset; }
+      .nl-input, .nl-btn { border-radius: 8px; width: 100%; }
+      .nl-btn { margin-top: 0.5rem; }
+      .regions-grid { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: 1fr 1fr; padding: 0 1rem; gap: 1rem; }
+      .arts-grid { display: flex; flex-direction: column; }
+      .art-3col { display: flex; flex-direction: column; }
+      .art-toc-wrap, .art-rail { display: none; }
+      .feed-layout { grid-template-columns: 1fr; }
+      .feed-sidebar { display: none; }
+    }
+  </style>
 </head>
 
 <body>

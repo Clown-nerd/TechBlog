@@ -5,6 +5,7 @@ import Link from 'next/link';
 
 export default function Navigation() {
   const [isDark, setIsDark] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     // Check initial theme from localStorage or system preference
@@ -24,24 +25,57 @@ export default function Navigation() {
     localStorage.setItem('bnb-theme', isNowDark ? 'dark' : 'light');
   };
 
+  const closeMenu = () => setMenuOpen(false);
+
+  const navLinks = [
+    { href: '/categories/kenya', label: 'Kenya' },
+    { href: '/categories/devops', label: 'DevOps' },
+    { href: '/categories/cybersecurity', label: 'Cybersecurity' },
+    { href: '/categories/startups', label: 'Startups' },
+    { href: '/categories/ai-ml', label: 'AI & ML' },
+    { href: '/about', label: 'About' },
+  ];
+
   return (
-    <nav>
+    <nav style={{ position: 'relative' }}>
       <Link href="/" className="nav-logo">
         <span className="live-dot"></span>Bash n Build
       </Link>
+
+      {/* Desktop nav links */}
       <ul className="nav-links">
-        <li><Link href="/categories/kenya">Kenya</Link></li>
-        <li><Link href="/categories/devops">DevOps</Link></li>
-        <li><Link href="/categories/cybersecurity">Cybersecurity</Link></li>
-        <li><Link href="/categories/startups">Startups</Link></li>
-        <li><Link href="/categories/ai-ml">AI &amp; ML</Link></li>
-        <li><Link href="/about">About</Link></li>
+        {navLinks.map(({ href, label }) => (
+          <li key={href}>
+            <Link href={href}>{label}</Link>
+          </li>
+        ))}
       </ul>
+
       <div className="nav-right">
+        {/* Hamburger button — hidden on desktop via CSS */}
+        <button
+          className="hamburger-btn"
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((prev) => !prev)}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: '#F6F4F0',
+            fontSize: '1.5rem',
+            cursor: 'pointer',
+            display: 'none', /* overridden to flex by .hamburger-btn CSS on mobile */
+            alignItems: 'center',
+            padding: '0.25rem',
+          }}
+        >
+          {menuOpen ? '✕' : '☰'}
+        </button>
+
         {/* Theme Toggle Button */}
-        <button 
-          className="theme-btn" 
-          id="themeToggle" 
+        <button
+          className="theme-btn"
+          id="themeToggle"
           aria-label="Toggle theme"
           onClick={toggleTheme}
         >
@@ -53,8 +87,20 @@ export default function Navigation() {
               So we just render the DOM structure required. */}
           <div className="tb-thumb"></div>
         </button>
+
         <Link href="/subscribe" className="nav-cta">Subscribe</Link>
       </div>
+
+      {/* Mobile dropdown menu */}
+      {menuOpen && (
+        <div className="mobile-nav-menu">
+          {navLinks.map(({ href, label }) => (
+            <Link key={href} href={href} onClick={closeMenu}>
+              {label}
+            </Link>
+          ))}
+        </div>
+      )}
     </nav>
   );
 }

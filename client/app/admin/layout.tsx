@@ -139,7 +139,7 @@ const s = {
     overflow: 'hidden',
   } as React.CSSProperties,
 
-  sidebar: {
+  sidebar: (isMobile: boolean, sidebarOpen: boolean): React.CSSProperties => ({
     width: 240,
     flexShrink: 0,
     background: 'var(--green)',
@@ -151,7 +151,9 @@ const s = {
     bottom: 0,
     zIndex: 100,
     overflowY: 'auto',
-  } as React.CSSProperties,
+    transform: isMobile ? (sidebarOpen ? 'translateX(0)' : 'translateX(-240px)') : 'none',
+    transition: 'transform 0.28s cubic-bezier(0.32,0.72,0,1)',
+  }),
 
   sidebarInner: {
     padding: '1.5rem 1rem',
@@ -382,6 +384,26 @@ const s = {
     overflowY: 'auto',
     padding: '2rem 2.25rem',
   } as React.CSSProperties,
+
+  mobileHeader: {
+    display: 'none', // shown via CSS media query
+    background: 'var(--green)',
+    height: 56,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '0 1rem',
+    borderBottom: '2px solid var(--gold)',
+    position: 'sticky',
+    top: 0,
+    zIndex: 150,
+  } as React.CSSProperties,
+
+  overlay: {
+    position: 'fixed',
+    inset: 0,
+    background: 'rgba(0,0,0,0.5)',
+    zIndex: 99,
+  } as React.CSSProperties,
 };
 
 /* ─── COMPONENT ────────────────────────────────────────────────────────────── */
@@ -389,8 +411,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const [quickOpen, setQuickOpen] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
   const quickRef = useRef<HTMLDivElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    handleResize(); // init
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   /* close dropdowns on outside click */
   useEffect(() => {
@@ -420,8 +452,33 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div style={s.shell}>
+      <style>{`
+        @media (max-width: 768px) {
+          .admin-mobile-header { display: flex !important; }
+          .admin-content-wrap { margin-left: 0 !important; }
+          .admin-search-input { width: 160px !important; }
+          .admin-page-title { font-size: 0.95rem !important; }
+          .admin-header-search { display: none !important; }
+        }
+        @media (min-width: 769px) {
+          .admin-sidebar-mobile-close { display: none !important; }
+        }
+      `}</style>
+
+      {/* ── MOBILE OVERLAY ──────────────────────────────── */}
+      {isMobile && sidebarOpen && (
+        <div style={s.overlay} onClick={() => setSidebarOpen(false)} />
+      )}
+
       {/* ── SIDEBAR ─────────────────────────────────────── */}
-      <aside style={s.sidebar}>
+      <aside style={s.sidebar(isMobile, sidebarOpen)}>
+        <button 
+          className="admin-sidebar-mobile-close"
+          onClick={() => setSidebarOpen(false)}
+          style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', color: '#F6F4F0', fontSize: '1.2rem', cursor: 'pointer', zIndex: 101 }}
+        >
+          ✕
+        </button>
         <div style={s.sidebarInner as React.CSSProperties}>
           <Link href="/admin" style={s.logo}>
             <span style={s.liveDot} />
@@ -438,6 +495,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   key={item.href + item.label}
                   href={item.href}
                   style={s.navItem(isActive(item.href))}
+                  onClick={() => setSidebarOpen(false)}
                   onMouseEnter={e => {
                     if (!isActive(item.href)) {
                       e.currentTarget.style.background = 'rgba(255,255,255,0.07)';
@@ -461,15 +519,28 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* ── CONTENT AREA ────────────────────────────────── */}
-      <div style={s.contentWrap as React.CSSProperties}>
+      <div className="admin-content-wrap" style={s.contentWrap as React.CSSProperties}>
+        {/* ── MOBILE HEADER ───────────────────────────────── */}
+        <div className="admin-mobile-header" style={s.mobileHeader}>
+          <button 
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            style={{ background: 'none', border: 'none', color: '#F6F4F0', fontSize: '1.5rem', cursor: 'pointer', padding: 0 }}
+          >
+            ☰
+          </button>
+          <div style={{ ...s.logo, marginBottom: 0, padding: 0 }}>Bash n Build CMS</div>
+          <div style={{ width: 24 }} />
+        </div>
+
         {/* ── HEADER ──────────────────────────────────────── */}
         <header style={s.header}>
           <div style={s.headerLeft}>
-            <h1 style={s.pageTitle}>{pageTitle}</h1>
-            <div style={s.searchWrap as React.CSSProperties}>
+            <h1 className="admin-page-title" style={s.pageTitle}>{pageTitle}</h1>
+            <div className="admin-header-search" style={s.searchWrap as React.CSSProperties}>
               <span style={s.searchIcon as React.CSSProperties}>{icons.search}</span>
               <input
                 type="text"
+                className="admin-search-input"
                 placeholder="Search articles, media, users..."
                 style={s.searchInput}
                 onFocus={e => { e.currentTarget.style.borderColor = 'var(--gold)'; }}

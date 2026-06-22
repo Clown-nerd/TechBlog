@@ -9,10 +9,10 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
   return (
     <div className="page active" id="page-category">
-      <div className="cat-hero">
+      <div className="cat-hero" style={{ height: 'auto' }}>
         <div className="cat-hero-inner">
           <div className="cat-hero-label">Category</div>
-          <h1 className="cat-hero-title">{title}</h1>
+          <h1 className="cat-hero-title" style={{ wordBreak: 'break-word', hyphens: 'auto' }}>{title}</h1>
           <p className="cat-hero-sub">Infrastructure, containers, CI/CD, and everything you need to ship Kenyan software to
             the world.</p>
         </div>
