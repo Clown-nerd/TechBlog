@@ -1,20 +1,38 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 
 export default function Navigation() {
   const [isDark, setIsDark] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Check initial theme from localStorage or system preference
     const saved = localStorage.getItem('bnb-theme');
     const sys = window.matchMedia('(prefers-color-scheme: dark)').matches;
     if (saved === 'dark' || (!saved && sys)) {
       document.documentElement.classList.add('dark');
       setIsDark(true);
     }
+  }, []);
+
+  // Close menu on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    if (menuOpen) document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [menuOpen]);
+
+  // Close menu on resize to desktop
+  useEffect(() => {
+    const handler = () => { if (window.innerWidth > 768) setMenuOpen(false); };
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
   }, []);
 
   const toggleTheme = () => {
@@ -37,70 +55,148 @@ export default function Navigation() {
   ];
 
   return (
-    <nav style={{ position: 'relative' }}>
-      <Link href="/" className="nav-logo">
-        <span className="live-dot"></span>Bash n Build
-      </Link>
-
-      {/* Desktop nav links */}
-      <ul className="nav-links">
-        {navLinks.map(({ href, label }) => (
-          <li key={href}>
-            <Link href={href}>{label}</Link>
-          </li>
-        ))}
-      </ul>
-
-      <div className="nav-right">
+    <>
+      <nav ref={menuRef} style={{ position: 'relative' }}>
         {/* Hamburger button — hidden on desktop via CSS */}
         <button
-          className="hamburger-btn"
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          className="nav-hamburger"
+          onClick={() => setMenuOpen(v => !v)}
+          aria-label="Toggle menu"
           aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((prev) => !prev)}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: '#F6F4F0',
-            fontSize: '1.5rem',
-            cursor: 'pointer',
-            display: 'none', /* overridden to flex by .hamburger-btn CSS on mobile */
-            alignItems: 'center',
-            padding: '0.25rem',
-          }}
         >
-          {menuOpen ? '✕' : '☰'}
+          <span style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '4px',
+            pointerEvents: 'none',
+          }}>
+            <span style={{
+              display: 'block', width: 20, height: 2,
+              background: '#F6F4F0',
+              borderRadius: 2,
+              transform: menuOpen ? 'rotate(45deg) translate(4px, 4px)' : 'none',
+              transition: 'transform 0.2s',
+            }} />
+            <span style={{
+              display: 'block', width: 20, height: 2,
+              background: '#F6F4F0',
+              borderRadius: 2,
+              opacity: menuOpen ? 0 : 1,
+              transition: 'opacity 0.2s',
+            }} />
+            <span style={{
+              display: 'block', width: 20, height: 2,
+              background: '#F6F4F0',
+              borderRadius: 2,
+              transform: menuOpen ? 'rotate(-45deg) translate(4px, -4px)' : 'none',
+              transition: 'transform 0.2s',
+            }} />
+          </span>
         </button>
 
-        {/* Theme Toggle Button */}
-        <button
-          className="theme-btn"
-          id="themeToggle"
-          aria-label="Toggle theme"
-          onClick={toggleTheme}
-        >
-          <div className="tb-icons">
-            <span>☀</span><span>☾</span>
-          </div>
-          {/* We rely on the CSS selector for html.dark .tb-thumb targeting the div within .theme-btn if present,
-              Wait, the CSS for tb-thumb moving right is: `html.dark .tb-thumb { left:26px; }`. 
-              So we just render the DOM structure required. */}
-          <div className="tb-thumb"></div>
-        </button>
+        <Link href="/" className="nav-logo">
+          <span className="live-dot"></span>Bash n Build
+        </Link>
 
-        <Link href="/subscribe" className="nav-cta">Subscribe</Link>
-      </div>
-
-      {/* Mobile dropdown menu */}
-      {menuOpen && (
-        <div className="mobile-nav-menu">
-          {navLinks.map(({ href, label }) => (
-            <Link key={href} href={href} onClick={closeMenu}>
-              {label}
-            </Link>
+        {/* Desktop nav links */}
+        <ul className="nav-links">
+          {navLinks.map(link => (
+            <li key={link.href}>
+              <Link href={link.href}>{link.label}</Link>
+            </li>
           ))}
+        </ul>
+
+        <div className="nav-right">
+          <button
+            className="theme-btn"
+            id="themeToggle"
+            aria-label="Toggle theme"
+            onClick={toggleTheme}
+          >
+            <div className="tb-icons">
+              <span>☀</span><span>☾</span>
+            </div>
+            <div className="tb-thumb"></div>
+          </button>
+          <Link href="/subscribe" className="nav-cta">Subscribe</Link>
         </div>
-      )}
-    </nav>
+
+        {/* Mobile dropdown menu */}
+        {menuOpen && (
+          <div className="nav-mobile-menu">
+            {navLinks.map(link => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="nav-mobile-link"
+                onClick={closeMenu}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        )}
+      </nav>
+
+      {/* Global styles for the hamburger + mobile menu */}
+      <style>{`
+        .nav-hamburger {
+          display: none;
+          background: none;
+          border: none;
+          cursor: pointer;
+          padding: 8px;
+          flex-shrink: 0;
+          align-items: center;
+          justify-content: center;
+        }
+        .nav-mobile-menu {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background: rgba(26,67,49,0.97);
+          backdrop-filter: blur(14px);
+          -webkit-backdrop-filter: blur(14px);
+          border-bottom: 2.5px solid var(--gold);
+          z-index: 199;
+          display: flex;
+          flex-direction: column;
+          padding: 0.5rem 0;
+        }
+        .nav-mobile-link {
+          font-size: 0.82rem;
+          font-weight: 500;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: rgba(246,244,240,0.85);
+          padding: 0.75rem 1.5rem;
+          border-bottom: 1px solid rgba(255,255,255,0.07);
+          transition: background 0.15s, color 0.15s;
+        }
+        .nav-mobile-link:last-child {
+          border-bottom: none;
+        }
+        .nav-mobile-link:hover {
+          background: rgba(255,255,255,0.06);
+          color: var(--gold);
+        }
+        @media (max-width: 768px) {
+          .nav-hamburger {
+            display: flex !important;
+            order: -1;
+          }
+          .nav-logo {
+            flex: 1;
+            justify-content: center;
+          }
+        }
+        @media (min-width: 769px) {
+          .nav-hamburger { display: none !important; }
+          .nav-mobile-menu { display: none !important; }
+        }
+      `}</style>
+    </>
   );
 }

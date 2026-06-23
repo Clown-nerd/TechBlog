@@ -139,7 +139,7 @@ const s = {
     overflow: 'hidden',
   } as React.CSSProperties,
 
-  sidebar: (isMobile: boolean, sidebarOpen: boolean): React.CSSProperties => ({
+  sidebar: {
     width: 240,
     flexShrink: 0,
     background: 'var(--green)',
@@ -151,9 +151,8 @@ const s = {
     bottom: 0,
     zIndex: 100,
     overflowY: 'auto',
-    transform: isMobile ? (sidebarOpen ? 'translateX(0)' : 'translateX(-240px)') : 'none',
-    transition: 'transform 0.28s cubic-bezier(0.32,0.72,0,1)',
-  }),
+    // Mobile: slide in/out
+  } as React.CSSProperties,
 
   sidebarInner: {
     padding: '1.5rem 1rem',
@@ -384,26 +383,6 @@ const s = {
     overflowY: 'auto',
     padding: '2rem 2.25rem',
   } as React.CSSProperties,
-
-  mobileHeader: {
-    display: 'none', // shown via CSS media query
-    background: 'var(--green)',
-    height: 56,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '0 1rem',
-    borderBottom: '2px solid var(--gold)',
-    position: 'sticky',
-    top: 0,
-    zIndex: 150,
-  } as React.CSSProperties,
-
-  overlay: {
-    position: 'fixed',
-    inset: 0,
-    background: 'rgba(0,0,0,0.5)',
-    zIndex: 99,
-  } as React.CSSProperties,
 };
 
 /* ─── COMPONENT ────────────────────────────────────────────────────────────── */
@@ -411,18 +390,27 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const [quickOpen, setQuickOpen] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const quickRef = useRef<HTMLDivElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 768);
-    handleResize(); // init
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  useEffect(() => {
+    if (isMobile && sidebarOpen) {
+      document.body.classList.add('sidebar-open');
+    } else {
+      document.body.classList.remove('sidebar-open');
+    }
+    return () => document.body.classList.remove('sidebar-open');
+  }, [isMobile, sidebarOpen]);
 
   /* close dropdowns on outside click */
   useEffect(() => {
@@ -454,33 +442,40 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div style={s.shell}>
       <style>{`
         @media (max-width: 768px) {
-          .admin-mobile-header { display: flex !important; }
           .admin-content-wrap { margin-left: 0 !important; }
           .admin-search-input { width: 160px !important; }
           .admin-page-title { font-size: 0.95rem !important; }
           .admin-header-search { display: none !important; }
         }
-        @media (min-width: 769px) {
-          .admin-sidebar-mobile-close { display: none !important; }
-        }
       `}</style>
 
-      {/* ── MOBILE OVERLAY ──────────────────────────────── */}
-      {isMobile && sidebarOpen && (
-        <div style={s.overlay} onClick={() => setSidebarOpen(false)} />
-      )}
-
       {/* ── SIDEBAR ─────────────────────────────────────── */}
-      <aside style={s.sidebar(isMobile, sidebarOpen)}>
-        <button 
-          className="admin-sidebar-mobile-close"
-          onClick={() => setSidebarOpen(false)}
-          style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', color: '#F6F4F0', fontSize: '1.2rem', cursor: 'pointer', zIndex: 101 }}
-        >
-          ✕
-        </button>
+      <aside
+        style={{
+          ...s.sidebar,
+          transform: isMobile ? (sidebarOpen ? 'translateX(0)' : 'translateX(-240px)') : 'translateX(0)',
+          transition: 'transform 0.28s cubic-bezier(0.32,0.72,0,1)',
+        }}
+      >
         <div style={s.sidebarInner as React.CSSProperties}>
-          <Link href="/admin" style={s.logo}>
+          {isMobile && (
+            <button
+              onClick={() => setSidebarOpen(false)}
+              style={{
+                alignSelf: 'flex-end',
+                background: 'none',
+                border: 'none',
+                color: 'rgba(246,244,240,0.6)',
+                fontSize: '1.2rem',
+                cursor: 'pointer',
+                padding: '0 0.25rem',
+                marginBottom: '0.5rem',
+              }}
+            >
+              ✕
+            </button>
+          )}
+          <Link href="/admin" style={s.logo} onClick={() => isMobile && setSidebarOpen(false)}>
             <span style={s.liveDot} />
             Bash n Build CMS
           </Link>
@@ -495,7 +490,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   key={item.href + item.label}
                   href={item.href}
                   style={s.navItem(isActive(item.href))}
-                  onClick={() => setSidebarOpen(false)}
+                  onClick={() => isMobile && setSidebarOpen(false)}
                   onMouseEnter={e => {
                     if (!isActive(item.href)) {
                       e.currentTarget.style.background = 'rgba(255,255,255,0.07)';
@@ -519,21 +514,27 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* ── CONTENT AREA ────────────────────────────────── */}
-      <div className="admin-content-wrap" style={s.contentWrap as React.CSSProperties}>
-        {/* ── MOBILE HEADER ───────────────────────────────── */}
-        <div className="admin-mobile-header" style={s.mobileHeader}>
-          <button 
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            style={{ background: 'none', border: 'none', color: '#F6F4F0', fontSize: '1.5rem', cursor: 'pointer', padding: 0 }}
-          >
-            ☰
-          </button>
-          <div style={{ ...s.logo, marginBottom: 0, padding: 0 }}>Bash n Build CMS</div>
-          <div style={{ width: 24 }} />
-        </div>
-
+      <div className="admin-content-wrap" style={{ ...s.contentWrap, marginLeft: isMobile ? 0 : 240 }}>
         {/* ── HEADER ──────────────────────────────────────── */}
         <header style={s.header}>
+          {isMobile && (
+            <button
+              onClick={() => setSidebarOpen(v => !v)}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#F6F4F0',
+                fontSize: '1.4rem',
+                cursor: 'pointer',
+                padding: '4px 8px',
+                marginRight: '0.5rem',
+                flexShrink: 0,
+              }}
+              aria-label="Toggle sidebar"
+            >
+              ☰
+            </button>
+          )}
           <div style={s.headerLeft}>
             <h1 className="admin-page-title" style={s.pageTitle}>{pageTitle}</h1>
             <div className="admin-header-search" style={s.searchWrap as React.CSSProperties}>
@@ -639,6 +640,25 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {children}
         </main>
       </div>
+
+      {isMobile && sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.5)',
+            zIndex: 99,
+          }}
+        />
+      )}
+
+      <style>{`
+        @media (max-width: 768px) {
+          /* Prevent body scroll when sidebar open */
+          body.sidebar-open { overflow: hidden; }
+        }
+      `}</style>
     </div>
   );
 }

@@ -713,112 +713,262 @@ html.dark .pill { background:rgba(26,67,49,.25); color:#7ee787; }
 
 /* MOBILE RESPONSIVE FIXES (< 768px) */
 @media (max-width: 768px) {
-  /* 1. NAV */
+
+  /* ── NAV ── */
   nav {
     padding: 0 1rem;
-    flex-wrap: wrap;
     height: auto;
-    min-height: 60px;
+    min-height: 56px;
+    flex-wrap: nowrap;
+    overflow: hidden;
   }
-  .nav-links { display: none; }
-  .nav-right { gap: 0.5rem; }
-  .nav-logo { font-size: 1rem; }
+  .nav-logo {
+    font-size: 1rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .nav-links {
+    display: none;
+  }
+  .nav-right {
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+  .nav-cta {
+    font-size: 0.72rem !important;
+    padding: 0.35rem 0.7rem !important;
+  }
 
-  /* 2. HERO */
+  /* ── TICKER ── */
+  .ticker-bar {
+    height: 32px;
+  }
+  .ticker-label {
+    font-size: 0.55rem;
+    padding: 0.2rem 0.5rem;
+  }
+  .ticker-item {
+    font-size: 0.62rem;
+  }
+
+  /* ── HERO — this is the most broken section ── */
   .hero {
     display: flex;
     flex-direction: column;
     min-height: unset;
+    overflow: hidden;
   }
   .hero-left {
-    clip-path: none;
-    min-height: 55vw;
-    padding: 2.5rem 1.25rem 2rem;
+    clip-path: none !important;   /* CRITICAL: removes diagonal cut that causes white gap */
+    min-height: unset;
+    width: 100%;
+    padding: 2.5rem 1.25rem 2.5rem;
+    order: 2;                     /* text below the card on mobile */
   }
   .hero-right {
-    padding: 1.75rem 1.25rem;
+    width: 100%;
+    padding: 1.5rem 1rem;
+    order: 1;                     /* featured card on top */
+    background: var(--cream);
   }
-  .hero-h1 { font-size: clamp(1.9rem, 7vw, 2.8rem); }
-  .hero-sub { font-size: 0.88rem; }
-  .hero-btns { gap: 0.6rem; }
-  .btn-primary, .btn-ghost { padding: 0.65rem 1.2rem; font-size: 0.82rem; }
+  html.dark .hero-right {
+    background: #111210;
+  }
+  .hero-right::before,
+  .hero-right::after {
+    display: none;                /* hide decorative circles that cause overflow */
+  }
+  .hero-h1 {
+    font-size: clamp(1.9rem, 8vw, 2.6rem);
+    margin-bottom: 1rem;
+  }
+  .hero-sub {
+    font-size: 0.88rem;
+    margin-bottom: 1.75rem;
+  }
+  .hero-btns {
+    flex-direction: column;
+    gap: 0.65rem;
+    align-items: flex-start;
+  }
+  .btn-primary,
+  .btn-ghost {
+    padding: 0.7rem 1.4rem;
+    font-size: 0.84rem;
+    width: fit-content;
+  }
+  .hero-eyebrow {
+    font-size: 0.6rem;
+    margin-bottom: 1rem;
+  }
 
-  /* 3. SECTIONS */
+  /* ── FEATURED CARD (hero right) ── */
+  .feat-card-img {
+    height: 160px;
+  }
+  .feat-title {
+    font-size: 1rem;
+  }
+  .side-cards {
+    gap: 0.65rem;
+  }
+  .side-card {
+    padding: 0.7rem 0.85rem;
+  }
+  .side-num {
+    font-size: 1.4rem;
+    min-width: 1.8rem;
+  }
+  .side-title {
+    font-size: 0.8rem;
+  }
+
+  /* ── SECTIONS ── */
   .section,
-  .newsletter,
-  .about-body,
-  .feed-layout,
-  .art-page-wrap,
-  .search-pg,
-  .author-articles,
-  .cat-hero,
-  .code-section {
-    padding: 2rem 1rem;
+  .code-section,
+  .newsletter {
+    padding: 2.5rem 1.1rem;
+  }
+  .section.white {
+    padding: 2.5rem 1.1rem;
+  }
+  .sec-hdr {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+  }
+  .sec-title {
+    font-size: 1.55rem;
   }
 
-  /* 4. ARTICLES GRID */
-  .arts-grid { display: flex; flex-direction: column; gap: 1.25rem; }
-  .art-main .art-img { height: 180px; }
-  .art-title { font-size: 1.2rem; }
+  /* ── CATEGORIES ── */
+  .cats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+  .cat-card {
+    padding: 1rem 0.9rem;
+  }
+  .cat-name {
+    font-size: 0.8rem;
+  }
 
-  /* 5. CODE BLOCKS */
-  .code-block, .art-code-block { overflow-x: auto; }
-  pre { white-space: pre; overflow-x: auto; max-width: 100%; }
-  .code-body, .art-code-body { padding: 1rem; font-size: 0.72rem; }
+  /* ── ARTICLES GRID ── */
+  .arts-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .art-main .art-img {
+    height: 190px;
+  }
+  .art-title {
+    font-size: 1.2rem;
+  }
+  .art-sidebar {
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+  }
 
-  /* 6. NEWSLETTER */
-  .newsletter { flex-direction: column; gap: 1.5rem; padding: 2.5rem 1.25rem; }
-  .nl-form { min-width: unset; width: 100%; flex-direction: column; border-radius: 10px; }
-  .nl-input { border-radius: 8px 8px 0 0; }
-  .nl-btn { border-radius: 0 0 8px 8px; padding: 0.85rem; }
-  .nl-title { font-size: 1.55rem; }
+  /* ── CODE SECTION ── */
+  .code-block,
+  .art-code-block {
+    overflow-x: auto;
+  }
+  pre {
+    white-space: pre;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+  .code-body,
+  .art-code-body {
+    padding: 1rem 0.85rem;
+    font-size: 0.7rem;
+  }
+  .c-file {
+    font-size: 0.62rem;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
-  /* 7. FOOTER */
-  .footer-top { grid-template-columns: 1fr; gap: 1.5rem; padding: 2rem 1.25rem 1.5rem; }
-  .footer-bottom { flex-direction: column; gap: 0.75rem; padding: 1.25rem 1rem; text-align: center; }
-  .footer-socials { flex-wrap: wrap; justify-content: center; gap: 1rem; }
+  /* ── REGIONS ── */
+  .regions-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+  .region-card {
+    min-height: 220px;
+  }
+  .region-name {
+    font-size: 1.25rem;
+  }
 
-  /* 8. REGIONS GRID */
-  .regions-grid { grid-template-columns: 1fr; gap: 1rem; margin-top: 1.5rem; }
-  .region-card { min-height: 240px; }
+  /* ── NEWSLETTER ── */
+  .newsletter {
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 2.5rem 1.1rem;
+  }
+  .nl-left {
+    max-width: 100%;
+  }
+  .nl-title {
+    font-size: 1.5rem;
+  }
+  .nl-sub {
+    font-size: 0.85rem;
+  }
+  .nl-form {
+    min-width: unset;
+    width: 100%;
+    flex-direction: column;
+    border-radius: 10px;
+    box-shadow: var(--sh-float);
+    overflow: visible;
+  }
+  .nl-input {
+    border-radius: 8px 8px 0 0;
+    padding: 0.85rem 1rem;
+  }
+  .nl-btn {
+    border-radius: 0 0 8px 8px;
+    padding: 0.85rem;
+    text-align: center;
+  }
 
-  /* 9. CATEGORIES GRID */
-  .cats-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+  /* ── FOOTER ── */
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 2rem 1.1rem 1.5rem;
+  }
+  .footer-bottom {
+    flex-direction: column;
+    gap: 0.65rem;
+    padding: 1.25rem 1rem;
+    text-align: center;
+  }
+  .footer-socials {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
 
-  /* 10. FEED LAYOUT */
-  .feed-layout { grid-template-columns: 1fr; gap: 1.5rem; padding: 1.5rem 1rem; }
-  .feed-sidebar { display: none; }
-  .feed-item { grid-template-columns: 90px 1fr; }
-
-  /* 11. SEARCH PAGE */
-  .search-pg { padding: 1.5rem 1rem; }
-  .search-filters { gap: 0.4rem; }
-  .filter-pill { font-size: 0.62rem; padding: 0.3rem 0.7rem; }
-  .sr-item { grid-template-columns: 80px 1fr; }
-
-  /* 12. TEAM GRID */
-  .team-grid { grid-template-columns: 1fr 1fr; padding: 0 1rem 2.5rem; gap: 1rem; }
-
-  /* 13. ABOUT */
-  .two-col { grid-template-columns: 1fr; gap: 2rem; }
-  .about-h1 { font-size: 2.2rem; }
-  .stat-band-inner { grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .stat-val { font-size: 1.8rem; }
-
-  /* 14. SUBSCRIBE BOX */
-  .subscribe-box { padding: 2rem 1.25rem; }
-  .sub-title { font-size: 1.55rem; }
-  .form-row { grid-template-columns: 1fr; }
-  .topics-grid { grid-template-columns: 1fr; }
-
-  /* 15. ARTICLE 3-COLUMN LAYOUT */
+  /* ── ARTICLE PAGE ── */
+  .art-page-wrap {
+    padding: 1.5rem 1rem 3rem;
+  }
   .art-3col {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
   .art-toc-wrap {
-    display: none; /* hide TOC on mobile — it's inline via headings */
+    display: none;
   }
   .art-rail {
     position: static;
@@ -829,43 +979,163 @@ html.dark .pill { background:rgba(26,67,49,.25); color:#7ee787; }
   .art-rail .rail-card:last-child {
     grid-column: 1 / -1;
   }
-  .art-page-wrap {
-    padding: 1.5rem 1rem 3rem;
+  .art-page-title {
+    font-size: 1.65rem;
+    line-height: 1.2;
   }
-  .art-page-title { font-size: 1.65rem; }
-  .art-lead { font-size: 0.92rem; }
-  .art-byline { gap: 0.5rem; font-size: 0.72rem; }
-  .art-img-hero { height: 220px; border-radius: 10px; }
-  .related-grid { grid-template-columns: 1fr; gap: 0.85rem; }
-  .author-bio-card { flex-direction: column; align-items: flex-start; }
-  .breadcrumb { flex-wrap: wrap; gap: 0.3rem; }
-
-  /* 16. HAMBURGER BUTTON */
-  .hamburger-btn { display: flex !important; }
-  .mobile-nav-menu {
-    position: absolute;
-    top: 60px;
-    left: 0;
-    right: 0;
-    background: rgba(26,67,49,0.97);
-    backdrop-filter: blur(14px);
-    z-index: 201;
-    padding: 1rem 1.5rem 1.5rem;
-    display: flex;
+  .art-lead {
+    font-size: 0.92rem;
+  }
+  .art-byline {
+    gap: 0.5rem;
+    font-size: 0.72rem;
+    flex-wrap: wrap;
+  }
+  .art-img-hero {
+    height: 210px;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+  }
+  .related-grid {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+  .author-bio-card {
     flex-direction: column;
     gap: 0.85rem;
-    border-bottom: 2px solid var(--gold);
   }
-  .mobile-nav-menu a {
+  .breadcrumb {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  /* ── CATEGORY FEED PAGE ── */
+  .cat-hero {
+    padding: 2.5rem 1.1rem;
+  }
+  .cat-hero-title {
+    font-size: 1.9rem;
+    word-break: break-word;
+  }
+  .feed-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1.5rem 1rem;
+  }
+  .feed-sidebar {
+    display: none;
+  }
+  .feed-item {
+    grid-template-columns: 90px 1fr;
+  }
+  .feed-filters {
+    gap: 0.4rem;
+    margin-bottom: 1.25rem;
+  }
+  .filter-pill {
+    font-size: 0.62rem;
+    padding: 0.3rem 0.65rem;
+  }
+
+  /* ── SEARCH PAGE ── */
+  .search-pg {
+    padding: 1.5rem 1rem;
+  }
+  .search-bar {
+    font-size: 0.88rem;
+    padding: 0.85rem 1rem 0.85rem 2.8rem;
+  }
+  .search-filters {
+    gap: 0.4rem;
+  }
+  .sr-item {
+    grid-template-columns: 80px 1fr;
+  }
+  .sr-body {
+    padding: 0.85rem 0.85rem 0.85rem 0;
+  }
+  .sr-title {
     font-size: 0.9rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(246,244,240,0.85);
-    padding: 0.4rem 0;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
   }
-  .mobile-nav-menu a:last-child { border-bottom: none; }
+
+  /* ── ABOUT PAGE ── */
+  .about-hero {
+    padding: 3rem 1.1rem;
+  }
+  .about-h1 {
+    font-size: 2rem;
+  }
+  .stat-band {
+    padding: 1.75rem 1.1rem;
+  }
+  .stat-band-inner {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .stat-val {
+    font-size: 1.85rem;
+  }
+  .about-body {
+    padding: 2.5rem 1.1rem;
+  }
+  .two-col {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .team-grid {
+    grid-template-columns: 1fr 1fr;
+    padding: 0 1rem 2.5rem;
+    gap: 1rem;
+  }
+
+  /* ── SUBSCRIBE PAGE ── */
+  .subscribe-pg {
+    padding: 2.5rem 1rem;
+    align-items: flex-start;
+  }
+  .subscribe-box {
+    padding: 1.75rem 1.1rem;
+    border-radius: 14px;
+  }
+  .sub-title {
+    font-size: 1.55rem;
+  }
+  .sub-sub {
+    font-size: 0.84rem;
+  }
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .topics-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+  .topic-check {
+    font-size: 0.8rem;
+  }
+
+  /* ── AUTHOR PAGE ── */
+  .author-hero {
+    padding: 2rem 1.1rem;
+  }
+  .author-header {
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .author-name {
+    font-size: 1.55rem;
+  }
+  .author-arts-grid {
+    grid-template-columns: 1fr;
+  }
+  .author-articles {
+    padding: 2rem 1.1rem;
+  }
+  .author-stats {
+    gap: 1.25rem;
+  }
 }
 
 /* DESKTOP: hide hamburger + mobile menu */
