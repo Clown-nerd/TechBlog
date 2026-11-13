@@ -54,7 +54,6 @@ export default function AdminVideoInsert({ onInsert }: AdminVideoInsertProps) {
     <div className="avi">
       <h3 className="avi__heading">Insert YouTube Video</h3>
 
-      {/* URL / ID input */}
       <div className="avi__row">
         <input
           ref={urlRef}
@@ -66,7 +65,6 @@ export default function AdminVideoInsert({ onInsert }: AdminVideoInsertProps) {
         />
       </div>
 
-      {/* Title input */}
       <input
         className="avi__title-input"
         type="text"
@@ -78,19 +76,16 @@ export default function AdminVideoInsert({ onInsert }: AdminVideoInsertProps) {
         }}
       />
 
-      {/* Parsed ID badge */}
       {videoId && (
         <div className="avi__id-badge">ID: {videoId}</div>
       )}
 
-      {/* Validation error */}
       {urlInput.trim() && !videoId && (
         <p className="avi__error">
           Could not detect a valid YouTube video ID. Paste a full URL or an 11-character ID.
         </p>
       )}
 
-      {/* Live thumbnail preview */}
       {videoId && (
         <div className="avi__preview">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -113,7 +108,6 @@ export default function AdminVideoInsert({ onInsert }: AdminVideoInsertProps) {
         </div>
       )}
 
-      {/* Insert button */}
       <button
         className="avi__insert-btn"
         disabled={!canInsert}

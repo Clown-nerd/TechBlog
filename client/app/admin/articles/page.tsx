@@ -39,7 +39,7 @@ export default function ArticlesPage() {
         setArticles(lists);
       })
       .catch(() => {
-        // Mock fallback for UI visually impressive requirements if server is down
+        // Keep the article list usable when the API is unavailable.
         setArticles([
           {
             id: '1', title: 'The Future of Web Development', slug: 'future-web-dev', excerpt: 'A deep dive into upcoming frameworks and paradigms in 2026.', cover_image_url: '', status: 'published', views_count: 1402, published_at: new Date().toISOString(), created_at: new Date().toISOString(), author: { name: 'Alice Smith' }, category: { name: 'Technology' }
@@ -101,7 +101,6 @@ export default function ArticlesPage() {
   return (
     <div style={{ padding: '3rem 3.5rem', maxWidth: '1400px', margin: '0 auto' }}>
       
-      {/* Header Row */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <h1 style={{ fontFamily: '"Fraunces", serif', fontSize: '2.4rem', fontWeight: 900, color: 'var(--char)' }}>Articles</h1>
         <Link href="/admin/articles/new">
@@ -115,7 +114,6 @@ export default function ArticlesPage() {
         </Link>
       </div>
 
-      {/* Filter and Sort Row */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div style={{ display: 'flex', gap: '0.6rem' }}>
           {(['All', 'Published', 'Draft', 'Archived'] as const).map(f => (
@@ -140,7 +138,6 @@ export default function ArticlesPage() {
         </select>
       </div>
 
-      {/* Bulk Actions */}
       {selectedIds.size > 0 && (
         <div style={{
           background: 'var(--surface)', border: '1px solid var(--green)', borderRadius: '10px',
@@ -158,7 +155,6 @@ export default function ArticlesPage() {
         </div>
       )}
 
-      {/* Article Table */}
       <div style={{ background: 'var(--surface)', borderRadius: '12px', border: '1px solid var(--border)', overflow: 'hidden', boxShadow: 'var(--sh-card)' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
           <thead>
@@ -254,7 +250,6 @@ export default function ArticlesPage() {
         </table>
       </div>
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', marginTop: '2rem' }}>
           <button 

@@ -94,7 +94,6 @@ export default function LiveFeedPage() {
   }, [liveUpdates, selectedArticleId]);
 
 
-  /* --- HANDLERS FOR LEFT PANEL --- */
   const addBreakingStory = () => {
     if (!newHeadline.trim() || !newCategory) return;
     const newStory: BreakingStory = {
@@ -115,7 +114,6 @@ export default function LiveFeedPage() {
 
   const pushToTicker = (id: string) => {
     setBreakingQueue(breakingQueue.map(s => {
-      // Assuming only one can be active at a time? Let's say multiple can be active
       return s.id === id ? { ...s, active: true } : s;
     }));
   };
@@ -127,12 +125,10 @@ export default function LiveFeedPage() {
   };
 
   const makeArticle = (id: string) => {
-    // In a real flow, this would navigate to the new article page with prepopulated data
     alert(`Drafting article for story ID: ${id}`);
   };
 
 
-  /* --- HANDLERS FOR RIGHT PANEL --- */
   const postUpdate = () => {
     if (!updateText.trim() || !selectedArticleId) return;
 
@@ -158,7 +154,6 @@ export default function LiveFeedPage() {
 
   return (
     <div className="section" style={{ minHeight: '100vh' }}>
-      {/* Header */}
       <div style={{ marginBottom: '3rem', borderBottom: '2px solid var(--border)', paddingBottom: '1.5rem' }}>
         <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: '2.5rem', fontWeight: 900, color: 'var(--char)', marginBottom: '0.5rem', letterSpacing: '-0.02em' }}>
           LIVE FEED

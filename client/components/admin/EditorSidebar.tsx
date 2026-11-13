@@ -78,7 +78,6 @@ export default function EditorSidebar({
 
   return (
     <div className="cms-sidebar">
-      {/* ── Auto-save status ──────────────────────────────────── */}
       <div className="cms-autosave">
         <span className={`cms-autosave__dot ${isDirty ? 'is-dirty' : ''}`} />
         {lastSavedAt
@@ -87,7 +86,6 @@ export default function EditorSidebar({
         }
       </div>
 
-      {/* ── Article Details ───────────────────────────────────── */}
       <div className="cms-sidebar-card">
         <div className="cms-sidebar-card__title">Article Details</div>
 
@@ -126,7 +124,6 @@ export default function EditorSidebar({
         </div>
       </div>
 
-      {/* ── Taxonomy ──────────────────────────────────────────── */}
       <div className="cms-sidebar-card">
         <div className="cms-sidebar-card__title">Taxonomy</div>
 
@@ -178,7 +175,6 @@ export default function EditorSidebar({
         </div>
       </div>
 
-      {/* ── Media ─────────────────────────────────────────────── */}
       <div className="cms-sidebar-card">
         <div className="cms-sidebar-card__title">Media</div>
 
@@ -211,7 +207,6 @@ export default function EditorSidebar({
         </div>
       </div>
 
-      {/* ── Publishing ────────────────────────────────────────── */}
       <div className="cms-sidebar-card">
         <div className="cms-sidebar-card__title">Publishing</div>
 
@@ -233,7 +228,6 @@ export default function EditorSidebar({
           Reading time: <span className="cms-meta-row__val">{form.reading_time_minutes} min</span>
         </div>
       </div>
-      {/* ── SEO & META ────────────────────────────────────────── */}
       <div className="cms-sidebar-card">
         <div className="cms-sidebar-card__title" style={{ fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase", color: "var(--gold)" }}>
           SEO & META
@@ -280,7 +274,6 @@ export default function EditorSidebar({
           >
             {form.meta_description?.length || 0}/160
           </div>
-          {/* Google Preview */}
           <div style={{ marginTop: "1rem", backgroundColor: "var(--cream)", padding: "0.8rem", borderRadius: "8px", border: "1px solid var(--border)", fontSize: "0.85rem" }}>
             <div style={{ color: "var(--muted)", fontSize: "0.75rem", marginBottom: "0.2rem" }}>bashnbuild.co.ke/articles/{form.slug || "slug"}</div>
             <div style={{ color: "#1a0dab", fontSize: "1.05rem", fontFamily: "'IBM Plex Sans', sans-serif" }}>{form.seo_title || form.title || "SEO Title"}</div>

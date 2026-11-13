@@ -6,7 +6,6 @@ import {
   ResponsiveContainer, BarChart, Bar, Cell, PieChart, Pie,
 } from 'recharts';
 
-/* ─── MOCK DATA ────────────────────────────────────────────────────────────── */
 
 // 7-day sparkline data for stat cards
 const sparkPageViews = [6200, 7100, 7800, 6900, 7500, 5200, 7591];
@@ -82,7 +81,6 @@ const categoryPerf = [
   { category: 'Career', views: 2491, conversions: 89 },
 ];
 
-/* ─── MINI SPARKLINE (SVG) ─────────────────────────────────────────────────── */
 function Sparkline({ data, color, width = 90, height = 28 }: {
   data: number[];
   color: string;
@@ -119,7 +117,6 @@ function Sparkline({ data, color, width = 90, height = 28 }: {
   );
 }
 
-/* ─── CUSTOM TOOLTIP ───────────────────────────────────────────────────────── */
 function CustomTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   return (
@@ -163,7 +160,6 @@ function CustomTooltip({ active, payload, label }: any) {
   );
 }
 
-/* ─── DOUGHNUT CENTER LABEL ────────────────────────────────────────────────── */
 function DoughnutCenter({ viewBox }: any) {
   const { cx, cy } = viewBox;
   return (
@@ -186,7 +182,6 @@ function DoughnutCenter({ viewBox }: any) {
   );
 }
 
-/* ─── MAIN COMPONENT ──────────────────────────────────────────────────────── */
 export default function AnalyticsPage() {
   const [trafficData, setTrafficData] = useState<any[]>([]);
   const [resolvedColors, setResolvedColors] = useState({
@@ -239,7 +234,6 @@ export default function AnalyticsPage() {
         }
       `}</style>
 
-      {/* ── SECTION 1: OVERVIEW STAT CARDS ────────────────── */}
       <div style={cs.statsGrid}>
         <StatCard
           label="Total Page Views"
@@ -275,7 +269,6 @@ export default function AnalyticsPage() {
         />
       </div>
 
-      {/* ── SECTION 2: VIEWS OVER TIME ────────────────────── */}
       <div className="analytics-card" style={{ ...cs.card, marginBottom: '1.75rem', padding: '1.5rem' }}>
         <SectionHeader title="Views Over Time" sub="Last 30 days" />
         <div style={{ width: '100%', height: 320 }}>
@@ -333,7 +326,6 @@ export default function AnalyticsPage() {
         </div>
       </div>
 
-      {/* ── SECTION 3: TWO-COLUMN: TOP ARTICLES + FUNNEL ─── */}
       <div style={cs.twoCol}>
         {/* LEFT: Top Articles by Views */}
         <div className="analytics-card" style={cs.card}>
@@ -487,7 +479,6 @@ export default function AnalyticsPage() {
         </div>
       </div>
 
-      {/* ── SECTION 4: TRAFFIC SOURCES (DOUGHNUT) ─────────── */}
       <div className="analytics-card" style={{ ...cs.card, marginBottom: '1.75rem', padding: '1.5rem' }}>
         <SectionHeader title="Traffic Sources" />
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3rem', flexWrap: 'wrap' }}>
@@ -531,7 +522,6 @@ export default function AnalyticsPage() {
               </PieChart>
             </ResponsiveContainer>
           </div>
-          {/* Legend */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '.85rem' }}>
             {trafficSources.map((source, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '.65rem' }}>
@@ -564,7 +554,6 @@ export default function AnalyticsPage() {
         </div>
       </div>
 
-      {/* ── SECTION 5: GEOGRAPHIC BREAKDOWN ───────────────── */}
       <div className="analytics-card" style={{ ...cs.card, marginBottom: '1.75rem', padding: '1.5rem' }}>
         <SectionHeader title="Geographic Breakdown" />
         <div style={{ overflowX: 'auto' }}>
@@ -666,7 +655,6 @@ export default function AnalyticsPage() {
         </div>
       </div>
 
-      {/* ── SECTION 6: CATEGORY PERFORMANCE ───────────────── */}
       <div className="analytics-card" style={{ ...cs.card, padding: '1.5rem' }}>
         <SectionHeader title="Category Performance" sub="Views vs Subscriber conversions" />
         <div style={{ width: '100%', height: 320 }}>
@@ -708,7 +696,6 @@ export default function AnalyticsPage() {
   );
 }
 
-/* ─── STAT CARD ────────────────────────────────────────────────────────────── */
 function StatCard({ label, value, trend, trendUp, sparkData, sparkColor }: {
   label: string;
   value: string;
@@ -771,7 +758,6 @@ function StatCard({ label, value, trend, trendUp, sparkData, sparkColor }: {
   );
 }
 
-/* ─── SECTION HEADER ───────────────────────────────────────────────────────── */
 function SectionHeader({ title, sub }: { title: string; sub?: string }) {
   return (
     <div style={{
@@ -813,10 +799,8 @@ function SectionHeader({ title, sub }: { title: string; sub?: string }) {
   );
 }
 
-/* ─── IMPORT LABEL ─────────────────────────────────────────────────────────── */
 import { Label } from 'recharts';
 
-/* ─── STYLES ───────────────────────────────────────────────────────────────── */
 const cs = {
   statsGrid: {
     display: 'grid',

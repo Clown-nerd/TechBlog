@@ -85,14 +85,11 @@ export default async function ArticlePage({
 
   return (
     <>
-      {/* ---- Reading progress bar (client) ---- */}
       <ReadingProgressBar />
 
-      {/* ---- View count increment (client) ---- */}
       <ViewCountIncrement slug={slug} />
 
       <div className="art-page-wrap">
-        {/* ── Breadcrumb ── */}
         <nav className="breadcrumb">
           <Link href="/">Home</Link>
           <span>/</span>
@@ -109,7 +106,6 @@ export default async function ArticlePage({
 
         {/* ═══ Three-column grid ═══ */}
         <div className="art-3col">
-          {/* ── LEFT: Table of Contents ── */}
           <aside className="art-toc-wrap">
             <div className="toc-title">On this page</div>
             <ul className="toc-list">
@@ -126,9 +122,7 @@ export default async function ArticlePage({
             </ul>
           </aside>
 
-          {/* ── CENTER: Article ── */}
           <article>
-            {/* Header */}
             <div className="art-header">
               {categoryName && (
                 <div className="art-cat-pill">
@@ -142,7 +136,6 @@ export default async function ArticlePage({
                 <p className="art-lead">{article.excerpt}</p>
               )}
 
-              {/* Byline */}
               <div className="art-byline">
                 <div className="byline-avatar">{initials(authorName)}</div>
                 <div>
@@ -167,7 +160,6 @@ export default async function ArticlePage({
               </div>
             </div>
 
-            {/* Hero image */}
             {article.cover_image_url ? (
               <div className="art-img-hero" style={{ position: 'relative', overflow: 'hidden' }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -187,10 +179,8 @@ export default async function ArticlePage({
               </div>
             )}
 
-            {/* ── Article body (client component for video embeds) ── */}
             <ArticleBody segments={bodySegments} />
 
-            {/* ── Author bio card ── */}
             <div className="author-bio-card">
               <div className="bio-avatar">
                 {article.author?.avatar_url ? (
@@ -207,13 +197,10 @@ export default async function ArticlePage({
               </div>
             </div>
 
-            {/* ── Comments Section ── */}
             <CommentsSection comments={article.comments || []} />
           </article>
 
-          {/* ── RIGHT: Sidebar rail ── */}
           <aside className="art-rail">
-            {/* Tags */}
             {tags.length > 0 && (
               <div className="rail-card">
                 <div className="rail-title">Tags</div>
@@ -225,7 +212,6 @@ export default async function ArticlePage({
               </div>
             )}
 
-            {/* Share */}
             <div className="rail-card">
               <div className="rail-title">Share</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '.55rem', marginTop: '.25rem' }}>
@@ -256,7 +242,6 @@ export default async function ArticlePage({
               </div>
             </div>
 
-            {/* Newsletter CTA */}
             <div className="rail-card" style={{ background: 'var(--green)', borderColor: 'transparent' }}>
               <div className="rail-title" style={{ color: 'var(--gold)', borderColor: 'rgba(255,255,255,.1)' }}>
                 Newsletter

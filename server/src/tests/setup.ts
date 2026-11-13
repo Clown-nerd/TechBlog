@@ -7,7 +7,6 @@ import { AuthPayload, UserRole } from '../middleware/auth';
 
 const DEFAULT_SECRET = 'supersecret_key_change_in_production';
 
-// Helpers to generate tokens
 export const generateToken = (payload: AuthPayload) => {
   return jwt.sign(payload, process.env.JWT_SECRET || DEFAULT_SECRET, { expiresIn: '1h' });
 };
@@ -16,7 +15,6 @@ export const getAdminToken = () => generateToken({ id: 1, handle: 'admin', role:
 export const getAuthorToken = () => generateToken({ id: 2, handle: 'jdoe_dev', role: 'author' });
 export const getSubscriberToken = () => generateToken({ id: 4, handle: 'subscriber_user', role: 'subscriber' as UserRole });
 
-// Wait, the subscriber role in the DB seed is not present. Let's create a subscriber token for a mock user id 999.
 export const getMockSubscriberToken = () => generateToken({ id: 999, handle: 'sub_test', role: 'subscriber' as UserRole });
 
 beforeAll(async () => {

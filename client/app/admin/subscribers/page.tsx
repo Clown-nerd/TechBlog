@@ -147,7 +147,6 @@ export default function AdminSubscribersPage() {
         </table>
       </div>
       
-      {/* Pagination basics */}
       <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '1.5rem' }}>
         <button 
           className="btn-ghost" 

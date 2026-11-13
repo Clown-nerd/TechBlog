@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 
-/* ─── TYPES ────────────────────────────────────────────────────────────────── */
 interface MediaItem {
   id: string;
   filename: string;
@@ -13,7 +12,6 @@ interface MediaItem {
   mimeType: string;
 }
 
-/* ─── GRADIENT THUMBNAILS (dark green gradient art style) ──────────────────── */
 function generateGradientSVG(seed: number): string {
   const gradients = [
     'linear-gradient(135deg, #091f12 0%, #1A4331 50%, #2a6649 100%)',
@@ -26,7 +24,6 @@ function generateGradientSVG(seed: number): string {
   return gradients[seed % gradients.length];
 }
 
-/* ─── MOCK MEDIA DATA ──────────────────────────────────────────────────────── */
 const MOCK_MEDIA: MediaItem[] = [
   { id: 'media-1', filename: 'hero-silicon-savannah.webp', type: 'image', size: 245800, uploadedAt: '2026-04-05T10:24:00Z', thumbnail: '', mimeType: 'image/webp' },
   { id: 'media-2', filename: 'api-architecture-diagram.png', type: 'image', size: 189400, uploadedAt: '2026-04-04T14:12:00Z', thumbnail: '', mimeType: 'image/png' },
@@ -38,7 +35,6 @@ const MOCK_MEDIA: MediaItem[] = [
 
 const STORAGE_KEY = 'bnb_media_library';
 
-/* ─── HELPERS ──────────────────────────────────────────────────────────────── */
 function formatFileSize(bytes: number): string {
   if (bytes < 1024) return bytes + ' B';
   if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
@@ -59,7 +55,6 @@ function getMediaType(mime: string): 'image' | 'video' | 'document' {
   return 'document';
 }
 
-/* ─── TOAST NOTIFICATION ──────────────────────────────────────────────────── */
 function Toast({ message, visible }: { message: string; visible: boolean }) {
   return (
     <div style={{
@@ -86,7 +81,6 @@ function Toast({ message, visible }: { message: string; visible: boolean }) {
   );
 }
 
-/* ─── MAIN COMPONENT ──────────────────────────────────────────────────────── */
 export default function MediaLibraryPage() {
   const [media, setMedia] = useState<MediaItem[]>([]);
   const [filter, setFilter] = useState<'all' | 'image' | 'video' | 'document'>('all');
@@ -98,7 +92,6 @@ export default function MediaLibraryPage() {
   const [toast, setToast] = useState({ message: '', visible: false });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  /* ── LOAD FROM STORAGE ──────────────────────── */
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
@@ -115,20 +108,17 @@ export default function MediaLibraryPage() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(MOCK_MEDIA));
   }, []);
 
-  /* ── SAVE TO STORAGE ────────────────────────── */
   useEffect(() => {
     if (media.length > 0) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(media));
     }
   }, [media]);
 
-  /* ── TOAST HELPER ───────────────────────────── */
   const showToast = useCallback((message: string) => {
     setToast({ message, visible: true });
     setTimeout(() => setToast({ message: '', visible: false }), 2500);
   }, []);
 
-  /* ── FILE UPLOAD HANDLER ────────────────────── */
   const handleFiles = useCallback((files: FileList | null) => {
     if (!files || files.length === 0) return;
     const file = files[0];
@@ -171,7 +161,6 @@ export default function MediaLibraryPage() {
     }, 200);
   }, [showToast]);
 
-  /* ── DRAG & DROP ────────────────────────────── */
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(true);
@@ -187,7 +176,6 @@ export default function MediaLibraryPage() {
     handleFiles(e.dataTransfer.files);
   }, [handleFiles]);
 
-  /* ── DELETE ─────────────────────────────────── */
   const handleDelete = useCallback((id: string) => {
     setMedia(prev => {
       const updated = prev.filter(m => m.id !== id);
@@ -198,7 +186,6 @@ export default function MediaLibraryPage() {
     showToast('File deleted');
   }, [selectedId, showToast]);
 
-  /* ── COPY URL ───────────────────────────────── */
   const handleCopyUrl = useCallback((filename: string) => {
     const url = `/uploads/${filename}`;
     navigator.clipboard.writeText(url).then(() => {
@@ -215,7 +202,6 @@ export default function MediaLibraryPage() {
     });
   }, [showToast]);
 
-  /* ── FILTER & SORT ──────────────────────────── */
   const filtered = media
     .filter(m => filter === 'all' || m.type === filter)
     .sort((a, b) => {
@@ -259,7 +245,6 @@ export default function MediaLibraryPage() {
         }
       `}</style>
 
-      {/* ── HEADER ─────────────────────────────────────── */}
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
@@ -298,7 +283,6 @@ export default function MediaLibraryPage() {
         />
       </div>
 
-      {/* ── DRAG & DROP ZONE ───────────────────────────── */}
       <div
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -396,7 +380,6 @@ export default function MediaLibraryPage() {
         )}
       </div>
 
-      {/* ── FILTER BAR ─────────────────────────────────── */}
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
@@ -463,7 +446,6 @@ export default function MediaLibraryPage() {
         </div>
       </div>
 
-      {/* ── MEDIA COUNT ────────────────────────────────── */}
       <div style={{
         fontFamily: "'IBM Plex Mono', monospace",
         fontSize: '.68rem',
@@ -474,7 +456,6 @@ export default function MediaLibraryPage() {
         {filtered.length} {filtered.length === 1 ? 'item' : 'items'}
       </div>
 
-      {/* ── MEDIA GRID ─────────────────────────────────── */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
@@ -503,7 +484,6 @@ export default function MediaLibraryPage() {
               onMouseEnter={() => setHoveredId(item.id)}
               onMouseLeave={() => setHoveredId(null)}
             >
-              {/* Thumbnail */}
               <div style={{
                 height: 120,
                 position: 'relative',
@@ -528,14 +508,12 @@ export default function MediaLibraryPage() {
                     borderRadius: '8px 8px 0 0',
                     position: 'relative',
                   }}>
-                    {/* Dot pattern overlay */}
                     <div style={{
                       position: 'absolute',
                       inset: 0,
                       backgroundImage: 'radial-gradient(circle, rgba(232,163,23,.1) 1px, transparent 1px)',
                       backgroundSize: '18px 18px',
                     }} />
-                    {/* Video icon for video type */}
                     {item.type === 'video' && (
                       <div style={{
                         position: 'absolute',
@@ -562,7 +540,6 @@ export default function MediaLibraryPage() {
                   </div>
                 )}
 
-                {/* Hover overlay */}
                 {isHovered && (
                   <div style={{
                     position: 'absolute',
@@ -594,7 +571,6 @@ export default function MediaLibraryPage() {
                 )}
               </div>
 
-              {/* Info */}
               <div style={{ padding: '.65rem .75rem' }}>
                 <div style={{
                   fontSize: '.78rem',
@@ -620,7 +596,6 @@ export default function MediaLibraryPage() {
         })}
       </div>
 
-      {/* ── EMPTY STATE ────────────────────────────────── */}
       {filtered.length === 0 && (
         <div style={{
           textAlign: 'center' as const,
@@ -637,13 +612,11 @@ export default function MediaLibraryPage() {
         </div>
       )}
 
-      {/* ── TOAST ──────────────────────────────────────── */}
       <Toast message={toast.message} visible={toast.visible} />
     </div>
   );
 }
 
-/* ─── STYLES ───────────────────────────────────────────────────────────────── */
 const cs = {
   uploadBtn: {
     display: 'flex',

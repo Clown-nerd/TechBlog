@@ -98,7 +98,6 @@ export default function Navigation() {
           <span className="live-dot"></span>Bash n Build
         </Link>
 
-        {/* Desktop nav links */}
         <ul className="nav-links">
           {navLinks.map(link => (
             <li key={link.href}>
@@ -122,7 +121,6 @@ export default function Navigation() {
           <Link href="/subscribe" className="nav-cta">Subscribe</Link>
         </div>
 
-        {/* Mobile dropdown menu */}
         {menuOpen && (
           <div className="nav-mobile-menu">
             {navLinks.map(link => (

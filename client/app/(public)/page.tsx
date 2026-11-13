@@ -4,7 +4,6 @@ import CopyButton from '@/components/CopyButton';
 export default function Home() {
   return (
     <div className="page active" id="page-home">
-      {/* TICKER */}
       <div className="ticker-bar">
         <span className="ticker-label">Breaking</span>
         <div className="ticker-track" id="ticker" style={{ animationDuration: '32s' }}>
@@ -20,7 +19,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* HERO */}
       <div className="hero">
         <div className="hero-left">
           <div className="hero-inner">
@@ -37,7 +35,6 @@ export default function Home() {
           </div>
         </div>
         <div className="hero-right">
-          {/* Featured Article */}
           <Link href="/search" className="feat-card" style={{ display: 'block' }}>
             <div className="feat-card-img">
               <div className="geo"></div>
@@ -53,7 +50,6 @@ export default function Home() {
               </div>
             </div>
           </Link>
-          {/* Side list */}
           <div className="side-cards">
             {[
               { num: '01', tag: '🔒 Cybersecurity', title: "Kenya's Data Protection Act: A Developer's Compliance Checklist", meta: 'Amina Ochieng · 7 min' },
@@ -73,7 +69,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* CATEGORIES */}
       <section className="section white">
         <div className="sec-hdr">
           <h2 className="sec-title">Browse by <span>Category</span></h2>
@@ -103,7 +98,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* LATEST ARTICLES */}
       <section className="section">
         <div className="sec-hdr">
           <h2 className="sec-title">Latest from <span>Kenya</span></h2>
@@ -143,7 +137,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CODE SHOWCASE */}
       <section className="code-section">
         <div className="sec-hdr" style={{ borderColor: 'rgba(246,244,240,.12)' }}>
           <h2 className="sec-title" style={{ color: '#F6F4F0' }}>Code That <span>Ships</span></h2>
@@ -186,7 +179,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* REGIONAL EXPANSION */}
       <section className="section white">
         <div className="sec-hdr">
           <h2 className="sec-title">Expanding <span>Pan-Africa</span></h2>
@@ -230,7 +222,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* NEWSLETTER */}
       <section className="newsletter">
         <div className="nl-left">
           <p className="nl-eyebrow">Weekly Digest</p>

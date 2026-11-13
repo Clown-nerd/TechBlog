@@ -62,7 +62,6 @@ function CommentItem({ comment }: { comment: CommentType }) {
             {isDeleted ? <span style={{ fontStyle: 'italic', color: 'var(--muted)' }}>This comment has been deleted.</span> : comment.body}
           </div>
           
-          {/* Replies */}
           {comment.replies && comment.replies.length > 0 && (
             <div className="comment-replies" style={{ marginTop: '1.5rem', borderLeft: '2px solid var(--border)', paddingLeft: '1.5rem' }}>
               {comment.replies.map(reply => (

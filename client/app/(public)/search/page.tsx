@@ -109,7 +109,6 @@ function SearchResults() {
     <>
       <SearchInput defaultValue={q} />
 
-      {/* Meta line */}
       <p className="search-meta">
         {q.trim().length < 2
           ? 'Enter at least 2 characters to search'
@@ -118,7 +117,6 @@ function SearchResults() {
             : `Showing ${totalCount} result${totalCount !== 1 ? 's' : ''} for "${q}"`}
       </p>
 
-      {/* Category filter pills */}
       <div className="search-filters">
         <span
           className={`filter-pill${!category ? ' active' : ''}`}
@@ -137,7 +135,6 @@ function SearchResults() {
         ))}
       </div>
 
-      {/* Results */}
       <div className="search-results">
         {loading ? (
           <>

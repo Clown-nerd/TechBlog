@@ -4,7 +4,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-/* ─── SVG ICONS ────────────────────────────────────────────────────────────── */
 const icons: Record<string, React.ReactNode> = {
   grid: (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -80,7 +79,6 @@ const icons: Record<string, React.ReactNode> = {
   ),
 };
 
-/* ─── NAV ITEMS ────────────────────────────────────────────────────────────── */
 interface NavItem {
   href: string;
   label: string;
@@ -118,7 +116,6 @@ const navGroups: NavGroup[] = [
   },
 ];
 
-/* ─── PAGE TITLE MAP ───────────────────────────────────────────────────────── */
 const pageTitleMap: Record<string, string> = {
   '/admin': 'Dashboard',
   '/admin/articles': 'Articles',
@@ -131,7 +128,6 @@ const pageTitleMap: Record<string, string> = {
   '/admin/settings': 'Settings',
 };
 
-/* ─── STYLES ───────────────────────────────────────────────────────────────── */
 const s = {
   shell: {
     display: 'flex',
@@ -385,7 +381,6 @@ const s = {
   } as React.CSSProperties,
 };
 
-/* ─── COMPONENT ────────────────────────────────────────────────────────────── */
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [quickOpen, setQuickOpen] = useState(false);
@@ -449,7 +444,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         }
       `}</style>
 
-      {/* ── SIDEBAR ─────────────────────────────────────── */}
       <aside
         style={{
           ...s.sidebar,
@@ -513,9 +507,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
       </aside>
 
-      {/* ── CONTENT AREA ────────────────────────────────── */}
       <div className="admin-content-wrap" style={{ ...s.contentWrap, marginLeft: isMobile ? 0 : 240 }}>
-        {/* ── HEADER ──────────────────────────────────────── */}
         <header style={s.header}>
           {isMobile && (
             <button
@@ -551,7 +543,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
 
           <div style={s.headerRight}>
-            {/* Quick Create */}
             <div ref={quickRef} style={s.quickCreate as React.CSSProperties}>
               <button
                 style={s.quickCreateBtn}
@@ -585,7 +576,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               )}
             </div>
 
-            {/* Bell */}
             <div
               style={s.bellWrap as React.CSSProperties}
               onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,.08)'; }}
@@ -595,7 +585,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <span style={s.bellBadge as React.CSSProperties} />
             </div>
 
-            {/* Avatar */}
             <div ref={avatarRef} style={{ position: 'relative' } as React.CSSProperties}>
               <div
                 style={s.avatarCircle}
@@ -635,7 +624,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
         </header>
 
-        {/* ── MAIN CONTENT ────────────────────────────────── */}
         <main style={s.mainContent as React.CSSProperties}>
           {children}
         </main>

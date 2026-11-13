@@ -141,9 +141,7 @@ export default function ArticleEditor({ articleId, status = 'draft', initialCont
 
   return (
     <div className="cms-editor-pane">
-      {/* ── Toolbar ──────────────────────────────────────────────── */}
       <div className="cms-toolbar">
-        {/* Headings */}
         <button
           className={`cms-toolbar__btn ${editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}`}
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
@@ -162,21 +160,18 @@ export default function ArticleEditor({ articleId, status = 'draft', initialCont
 
         <div className="cms-toolbar__sep" />
 
-        {/* Bold */}
         <button
           className={`cms-toolbar__btn ${editor.isActive('bold') ? 'is-active' : ''}`}
           onClick={() => editor.chain().focus().toggleBold().run()}
           title="Bold"
         ><strong>B</strong></button>
 
-        {/* Italic */}
         <button
           className={`cms-toolbar__btn ${editor.isActive('italic') ? 'is-active' : ''}`}
           onClick={() => editor.chain().focus().toggleItalic().run()}
           title="Italic"
         ><em>I</em></button>
 
-        {/* Inline code */}
         <button
           className={`cms-toolbar__btn ${editor.isActive('code') ? 'is-active' : ''}`}
           onClick={() => editor.chain().focus().toggleCode().run()}
@@ -185,7 +180,6 @@ export default function ArticleEditor({ articleId, status = 'draft', initialCont
 
         <div className="cms-toolbar__sep" />
 
-        {/* Bullet list */}
         <button
           className={`cms-toolbar__btn ${editor.isActive('bulletList') ? 'is-active' : ''}`}
           onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -194,7 +188,6 @@ export default function ArticleEditor({ articleId, status = 'draft', initialCont
           <Icon d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
         </button>
 
-        {/* Blockquote */}
         <button
           className={`cms-toolbar__btn ${editor.isActive('blockquote') ? 'is-active' : ''}`}
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
@@ -203,7 +196,6 @@ export default function ArticleEditor({ articleId, status = 'draft', initialCont
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179z"/></svg>
         </button>
 
-        {/* Code block */}
         <button
           className={`cms-toolbar__btn ${editor.isActive('codeBlock') ? 'is-active' : ''}`}
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
@@ -212,7 +204,6 @@ export default function ArticleEditor({ articleId, status = 'draft', initialCont
           <Icon d="M16 18l6-6-6-6M8 6l-6 6 6 6" />
         </button>
 
-        {/* Horizontal rule */}
         <button
           className="cms-toolbar__btn"
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
@@ -221,7 +212,6 @@ export default function ArticleEditor({ articleId, status = 'draft', initialCont
 
         <div className="cms-toolbar__sep" />
 
-        {/* Image */}
         <div style={{ position: 'relative', display: 'inline-block' }}>
           <button
             className={`cms-toolbar__btn ${imgOpen ? 'is-active' : ''}`}
@@ -252,7 +242,6 @@ export default function ArticleEditor({ articleId, status = 'draft', initialCont
           )}
         </div>
 
-        {/* YouTube */}
         <div className="cms-yt-popover">
           <button
             className={`cms-toolbar__btn ${ytOpen ? 'is-active' : ''}`}
@@ -302,12 +291,10 @@ export default function ArticleEditor({ articleId, status = 'draft', initialCont
         </div>
       </div>
 
-      {/* ── Editor body ──────────────────────────────────────────── */}
       <div className="cms-tiptap-wrap">
         <EditorContent editor={editor} />
       </div>
 
-      {/* ── Editorial Checklist ─────────────────────────────────── */}
       <div style={{ marginTop: '2rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden', boxShadow: 'var(--sh-card)' }}>
         <div 
           onClick={() => setChecklistOpen(!checklistOpen)}
@@ -318,7 +305,6 @@ export default function ArticleEditor({ articleId, status = 'draft', initialCont
             <div style={{ fontSize: '0.8rem', color: 'var(--muted)', marginTop: '0.4rem', fontFamily: '"IBM Plex Sans", sans-serif' }}>
               {completedCount}/10 checklist items complete
             </div>
-            {/* Progress Bar Container */}
             <div style={{ height: '6px', background: 'var(--border)', borderRadius: '3px', marginTop: '0.75rem', overflow: 'hidden', width: '200px' }}>
               <div style={{ height: '100%', width: `${(completedCount / 10) * 100}%`, background: barColor, transition: 'width 0.3s ease, background 0.3s ease' }} />
             </div>

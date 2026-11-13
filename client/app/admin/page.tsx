@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-/* ─── TYPES ────────────────────────────────────────────────────────────────── */
 interface Article {
   id: number;
   title: string;
@@ -28,7 +27,6 @@ interface Subscriber {
   is_active: boolean;
 }
 
-/* ─── SHIMMER KEYFRAMES (injected once) ────────────────────────────────────── */
 const shimmerCSS = `
 @keyframes adminShimmer {
   0% { background-position: -400px 0; }
@@ -36,7 +34,6 @@ const shimmerCSS = `
 }
 `;
 
-/* ─── SKELETON ─────────────────────────────────────────────────────────────── */
 function Skeleton({ width, height, borderRadius = 4, style }: {
   width: string | number;
   height: string | number;
@@ -58,7 +55,6 @@ function Skeleton({ width, height, borderRadius = 4, style }: {
   );
 }
 
-/* ─── STAT CARD ────────────────────────────────────────────────────────────── */
 function StatCard({ label, value, subtext, trend, trendUp, color, loading }: {
   label: string;
   value: string;
@@ -127,7 +123,6 @@ function StatCard({ label, value, subtext, trend, trendUp, color, loading }: {
   );
 }
 
-/* ─── SECTION HEADER ───────────────────────────────────────────────────────── */
 function SectionHeader({ title, accent }: { title: string; accent?: string }) {
   return (
     <div style={{
@@ -154,7 +149,6 @@ function SectionHeader({ title, accent }: { title: string; accent?: string }) {
   );
 }
 
-/* ─── HELPERS ──────────────────────────────────────────────────────────────── */
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 function formatDate(d: string | null): string {
@@ -170,7 +164,6 @@ function truncate(text: string, max: number): string {
   return text.length > max ? text.slice(0, max) + '…' : text;
 }
 
-/* ─── MAIN DASHBOARD ─────────────────────────────────────────────────────── */
 export default function AdminDashboard() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
@@ -245,7 +238,6 @@ export default function AdminDashboard() {
 
   return (
     <div>
-      {/* ── ROW 1: STAT CARDS ──────────────────────────── */}
       <div style={cs.statsGrid}>
         <StatCard
           label="Total Articles"
@@ -280,7 +272,6 @@ export default function AdminDashboard() {
         />
       </div>
 
-      {/* ── ROW 2: TOP STORIES + BREAKING ──────────────── */}
       <div style={cs.row2}>
         {/* LEFT: Top Performing Stories */}
         <div style={cs.card}>
@@ -401,9 +392,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* ── ROW 3: THREE COLUMNS ──────────────────────── */}
       <div style={cs.row3}>
-        {/* Pending Review */}
         <div style={cs.card}>
           <SectionHeader title="Pending Review" accent="var(--gold)" />
           {loading ? (
@@ -467,7 +456,6 @@ export default function AdminDashboard() {
           )}
         </div>
 
-        {/* Recent Subscribers */}
         <div style={cs.card}>
           <SectionHeader title="Recent Subscribers" accent="var(--terra)" />
           {loading ? (
@@ -518,7 +506,6 @@ export default function AdminDashboard() {
           )}
         </div>
 
-        {/* Quick Stats */}
         <div style={cs.card}>
           <SectionHeader title="Quick Stats" accent="var(--green)" />
           {loading ? (
@@ -541,7 +528,6 @@ export default function AdminDashboard() {
   );
 }
 
-/* ─── QUICK STAT ITEM ──────────────────────────────────────────────────────── */
 function QuickStatItem({ label, value }: { label: string; value: string }) {
   return (
     <div style={{
@@ -574,7 +560,6 @@ function QuickStatItem({ label, value }: { label: string; value: string }) {
   );
 }
 
-/* ─── STYLES ───────────────────────────────────────────────────────────────── */
 const cs = {
   statsGrid: {
     display: 'grid',

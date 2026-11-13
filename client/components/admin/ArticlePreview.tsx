@@ -136,7 +136,6 @@ export default function ArticlePreview({ form, body, authors, categories }: Arti
 
   return (
     <div className="preview-panel">
-      {/* Desktop viewport */}
       <div className="preview-viewport-wrap">
         <div className="preview-viewport-label">DESKTOP</div>
         <div className="preview-viewport preview-viewport--desktop">
@@ -149,7 +148,6 @@ export default function ArticlePreview({ form, body, authors, categories }: Arti
         </div>
       </div>
 
-      {/* Mobile viewport */}
       <div className="preview-viewport-wrap">
         <div className="preview-viewport-label">MOBILE</div>
         <div className="preview-viewport preview-viewport--mobile-outer">
